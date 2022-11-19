@@ -1,15 +1,11 @@
-package com.lv.api.dto.customer;
+package com.lv.api.dto.address;
 
 import com.lv.api.dto.ABasicAdminDto;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.lv.api.dto.customer.CustomerDto;
+import lombok.Data;
 
-@Getter
-@Setter
-@NoArgsConstructor
-public class CustomerAddressDto extends ABasicAdminDto {
-    private Long id;
+@Data
+public class CustomerAdressDto extends ABasicAdminDto {
     private CustomerDto customerDto;
     private String addressDetails;
     private String receiverFullName;

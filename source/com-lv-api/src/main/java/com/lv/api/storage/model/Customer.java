@@ -15,12 +15,11 @@ import java.util.List;
 public class Customer extends Auditable<String> {
 
     @Id
-    @Column(name = "account_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "account_id", referencedColumnName = "id")
-    @MapsId
+    @OneToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "account_id")
     private Account account;
 
     @Column(name = "wallet_money")
@@ -41,7 +40,7 @@ public class Customer extends Auditable<String> {
     private List<CustomerAddress> customerAddresses;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-    @JoinTable(name = TablePrefix.PREFIX_TABLE+"customer_product",
+    @JoinTable(name = TablePrefix.PREFIX_TABLE+"customer_favorites",
             joinColumns = @JoinColumn(name = "customer_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "product_id",
                     referencedColumnName = "id"))

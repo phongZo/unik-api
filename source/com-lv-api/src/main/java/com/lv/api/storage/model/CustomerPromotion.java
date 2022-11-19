@@ -24,4 +24,5 @@ public class CustomerPromotion extends Auditable<String>{
     private Customer customer;
 
     private Date expireDate;
+    private Boolean isInUse = false;
 }

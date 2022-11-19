@@ -36,7 +36,7 @@ public class Product extends Auditable<String> {
     @Column(name = "price")
     private Double price;
 
-    private Double salePrice;
+    private Integer saleOff;   //percent
     private Boolean isSaleOff = false;
 
     @Column(name = "image")

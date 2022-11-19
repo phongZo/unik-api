@@ -16,8 +16,13 @@ public class Orders extends Auditable<String>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Boolean isSaved = false;     // completed or canceled order will be save at 0am and can just find by admin site
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_id")
+    private Store store;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
@@ -39,5 +44,6 @@ public class Orders extends Auditable<String>{
     private String code; // Random 6 chữ
 
     private Integer paymentMethod; // Phương thức thanh toán: 1: COD, 2: Online
+    private Long customerPromotionId;
     private String note;
 }
