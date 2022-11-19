@@ -1,5 +1,6 @@
 package com.lv.api.storage.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,8 +12,11 @@ import javax.persistence.*;
 @Table(name = TablePrefix.PREFIX_TABLE + "store")
 public class Store extends Auditable<String> {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String posId;
+    @JsonIgnore
+    private String sessionId;
 
     @Column(name = "name")
     private String name;
@@ -23,18 +27,9 @@ public class Store extends Auditable<String> {
     @Column(name = "longitude")
     private Double longitude;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "province_id")
-    private Location province;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "district_id")
-    private Location district;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "ward_id")
-    private Location ward;
-
     @Column(name = "address_details")
     private String addressDetails;
+
+    @Column(name = "is_in_open_time")
+    private Boolean isInOpenTime;
 }

@@ -15,7 +15,7 @@ import java.util.Date;
 @Setter
 public class Account extends  Auditable<String>{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Integer kind;
     private String username;

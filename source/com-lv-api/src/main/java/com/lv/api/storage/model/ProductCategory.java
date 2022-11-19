@@ -18,12 +18,12 @@ import java.util.List;
 @AllArgsConstructor
 public class ProductCategory extends Auditable<String> {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "parent_id")
-    private ProductCategory parentCategory;
+    private ProductCategory parentCategory;    // no need
 
     @Column(name = "name")
     private String name;

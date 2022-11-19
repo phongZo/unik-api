@@ -15,14 +15,14 @@ import java.util.List;
 @Setter
 public class Group extends  Auditable<String>{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "name", unique =  true)
     private String name;
     @Column(name = "description", length = 1000)
     private String description;
     @Column(name = "kind")
-    private int kind;
+    private Integer kind;
 
     @Column(name = "is_super_admin")
     private Boolean isSuperAdmin = false;

@@ -9,9 +9,7 @@ import com.lv.api.form.store.CreateStoreForm;
 import com.lv.api.form.store.UpdateStoreForm;
 import com.lv.api.mapper.StoreMapper;
 import com.lv.api.storage.criteria.StoreCriteria;
-import com.lv.api.storage.model.Location;
 import com.lv.api.storage.model.Store;
-import com.lv.api.storage.repository.LocationRepository;
 import com.lv.api.storage.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +30,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class StoreController extends ABasicController {
     private final StoreRepository storeRepository;
-    private final LocationRepository locationRepository;
     private final StoreMapper storeMapper;
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -58,7 +55,7 @@ public class StoreController extends ABasicController {
         return new ApiMessageDto<>(storeMapper.fromStoreEntityToDto(store), "Get store successfully");
     }
 
-    @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
+    /*@PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> create(@Valid @RequestBody CreateStoreForm createStoreForm, BindingResult bindingResult) {
         Location ward = locationRepository.findById(createStoreForm.getWardId())
                 .orElseThrow(() -> new RequestException(ErrorCode.LOCATION_ERROR_NOTFOUND, "Ward not found"));
@@ -94,7 +91,7 @@ public class StoreController extends ABasicController {
         store.setWard(ward);
         storeRepository.save(store);
         return new ApiMessageDto<>("Update store successfully");
-    }
+    }*/
 
     @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> delete(@PathVariable(name = "id") Long id) {

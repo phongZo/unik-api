@@ -14,7 +14,7 @@ import java.util.List;
 @Table(name = TablePrefix.PREFIX_TABLE + "product")
 public class Product extends Auditable<String> {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -27,11 +27,17 @@ public class Product extends Auditable<String> {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "avg_star")
+    private Integer avgStar;
+
     @Column(name = "name")
     private String name;
 
     @Column(name = "price")
     private Double price;
+
+    private Double salePrice;
+    private Boolean isSaleOff = false;
 
     @Column(name = "image")
     private String image;

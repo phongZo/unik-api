@@ -9,27 +9,15 @@ import javax.persistence.*;
 @Setter
 @Entity
 @Table(name = TablePrefix.PREFIX_TABLE + "customer_address")
-public class CustomerAddress {
+public class CustomerAddress extends Auditable<String>{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "customer_id")
     private Customer customer;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "province_id")
-    private Location province;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "district_id")
-    private Location district;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "ward_id")
-    private Location ward;
 
     @Column(name = "address_details")
     private String addressDetails;

@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Table(name = TablePrefix.PREFIX_TABLE + "rank")
 public class Rank extends Auditable<String> {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(unique = true)
     private String name;

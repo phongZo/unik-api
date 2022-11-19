@@ -14,7 +14,7 @@ import java.util.List;
 @Table(name = TablePrefix.PREFIX_TABLE + "product_config")
 public class ProductConfig extends Auditable<String> {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "choice_kind")
