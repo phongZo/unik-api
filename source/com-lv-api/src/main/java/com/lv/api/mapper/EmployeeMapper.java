@@ -32,7 +32,7 @@ public interface EmployeeMapper {
     @Named("fromEmployeeEntityToDtoMapper")
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id", target = "id")
-    @Mapping(source = "account", target = "account", qualifiedByName = "adminGetMapping")
+    @Mapping(source = "account", target = "account", qualifiedByName = "fromEntityToAccountDtoMapper")
     @Mapping(source = "note", target = "note")
     @Mapping(source = "department", target = "department", qualifiedByName = "adminGetMapping")
     @Mapping(source = "job", target = "job", qualifiedByName = "adminGetMapping")

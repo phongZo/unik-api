@@ -74,6 +74,12 @@ public interface AccountMapper {
     @Named("adminAutoCompleteMapping")
     AccountAdminDto fromEntityToAccountAdminDtoAutoComplete(Account account);
 
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "fullName", target = "fullName")
+    @BeanMapping(ignoreByDefault = true)
+    @Named("accountAutoCompleteMapping")
+    AccountDto fromEntityToAccountDtoAutoComplete(Account account);
+
     @Named("passwordEncoder")
     default String encodePassword(String password) {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(password);

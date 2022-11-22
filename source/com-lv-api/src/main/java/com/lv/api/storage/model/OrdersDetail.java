@@ -16,6 +16,8 @@ public class OrdersDetail{
     @JoinColumn(name = "order_id")
     private Orders orders;
 
+    private Boolean isReviewed = false;
+
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;

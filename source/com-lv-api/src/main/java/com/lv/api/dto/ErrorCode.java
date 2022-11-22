@@ -29,6 +29,13 @@ public class ErrorCode {
     public static final String GROUP_ERROR_CAN_NOT_DELETED = "ERROR-GROUP-003";
 
     /**
+     * Promotion error code
+     */
+    public static final String PROMOTION_ERROR_UNAUTHORIZED = "ERROR-PROMOTION-000";
+    public static final String PROMOTION_ERROR_NOT_FOUND = "ERROR-PROMOTION-001";
+    public static final String PROMOTION_ERROR_BAD_REQUEST = "ERROR-PROMOTION-002";
+
+    /**
      * Orders error code
      */
     public static final String ORDERS_ERROR_UNAUTHORIZED = "ERROR-ORDERS-000";
@@ -96,6 +103,23 @@ public class ErrorCode {
 
     public static final String CUSTOMER_ERROR_NOT_FOUND = "ERROR-CUSTOMER-001";
     public static final String CUSTOMER_ADDRESS_ERROR_CANNOT_DELETE = "ERROR-CUSTOMER-002";
+
+    /**
+     * Product review error code
+     */
+    public static final String PRODUCT_REVIEW_ERROR_UNAUTHORIZED = "ERROR-PRODUCT-REVIEW-000";
+
+    public static final String PRODUCT_REVIEW_ERROR_NOT_FOUND = "ERROR-PRODUCT-REVIEW-001";
+    public static final String PRODUCT_REVIEW_ERROR_BAD_REQUEST = "ERROR-PRODUCT-REVIEW-002";
+
+
+    /**
+     * Orders Detail error code
+     */
+    public static final String ORDERS_DETAIL_ERROR_UNAUTHORIZED = "ERROR-ORDERS-DETAIL-000";
+
+    public static final String ORDERS_DETAIL_ERROR_NOT_FOUND = "ERROR-ORDERS-DETAIL-001";
+    public static final String ORDERS_DETAIL_ERROR_BAD_REQUEST = "ERROR-ORDERS-DETAIL-002";
 
     /**
      * Employee error code

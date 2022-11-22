@@ -34,6 +34,9 @@ public class CreateProductForm {
     @ApiModelProperty(name = "name", required = true)
     private String name;
 
+    private Integer saleOff;   //percent
+    private Boolean isSaleOff = false;
+
     @NotNull(message = "Price can not be null")
     @ApiModelProperty(name = "price", required = true)
     private Double price;

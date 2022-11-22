@@ -55,6 +55,15 @@ public interface CustomerMapper {
     @IterableMapping(elementTargetType = CustomerDto.class, qualifiedByName = "fromCustomerEntityToDtoMapper")
     List<CustomerDto> fromListCustomerEntityToListDto(List<Customer> customers);
 
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "account", target = "account",qualifiedByName="accountAutoCompleteMapping")
+    @Mapping(source = "gender", target = "gender")
+    @Mapping(source = "birthday", target = "birthday")
+    @Mapping(source = "note", target = "note")
+    @BeanMapping(ignoreByDefault = true)
+    @Named("customerAutoCompleteMapping")
+    CustomerDto fromEntityToAdminDtoAutoComplete(Customer customer);
+
     @Named("fromCustomerEntityToAdminDtoMapper")
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id", target = "id")
