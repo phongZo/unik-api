@@ -15,11 +15,16 @@ public class ProductDto {
     @ApiModelProperty(name = "id")
     private Long id;
 
+    private Integer saleOff;   //percent
+    private Boolean isSaleOff;
+
     @ApiModelProperty(name = "productCategoryId")
     private Long productCategoryId;
 
     @ApiModelProperty(name = "tags")
     private String tags;
+
+    private Integer totalReview;
 
     @ApiModelProperty(name = "description")
     private String description;
@@ -41,6 +46,10 @@ public class ProductDto {
 
     @ApiModelProperty(name = "kind")
     private Integer kind;
+
+    private float avgStar;
+
+    private Integer soldAmount;
 
     @ApiModelProperty(name = "productConfigs")
     private List<ProductConfigDto> productConfigs;

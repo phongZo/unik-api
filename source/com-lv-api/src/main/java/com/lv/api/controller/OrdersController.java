@@ -123,7 +123,7 @@ public class OrdersController extends ABasicController{
             throw new RequestException(ErrorCode.ORDERS_ERROR_NOT_FOUND, "Not found orders.");
         }
         List<OrdersDetailDto> ordersDetailDtoList = ordersDetailMapper
-                .fromEntityListToOrdersDetailDtoList(ordersDetailRepository.findAllById(id));
+                .fromEntityListToOrdersDetailDtoList(ordersDetailRepository.findAllByOrdersId(id));
         OrdersDto ordersDto = ordersMapper.fromEntityToOrdersDto(orders);
         ordersDto.setOrdersDetailDtoList(ordersDetailDtoList);
         result.setData(ordersDto);
@@ -163,7 +163,7 @@ public class OrdersController extends ABasicController{
         if(orders == null || !orders.getStatus().equals(Constants.STATUS_ACTIVE)) {
             throw new RequestException(ErrorCode.ORDERS_ERROR_NOT_FOUND, "Not found orders.");
         }
-        List<OrdersDetailDto> ordersDetailDtoList = ordersDetailMapper.fromEntityListToOrdersDetailClientDtoList(ordersDetailRepository.findAllById(id));
+        List<OrdersDetailDto> ordersDetailDtoList = ordersDetailMapper.fromEntityListToOrdersDetailClientDtoList(ordersDetailRepository.findAllByOrdersId(id));
         OrdersDto ordersDto = ordersMapper.fromEntityToOrdersDto(orders);
         ordersDto.setOrdersDetailDtoList(ordersDetailDtoList);
         result.setData(ordersDto);
@@ -289,9 +289,6 @@ public class OrdersController extends ABasicController{
     @PutMapping(value = "/update-state", produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     public ApiMessageDto<String> update(@Valid @RequestBody UpdateStateOrdersForm updateStateOrdersForm, BindingResult bindingResult) {
-        if (!isAdmin()) {   // role store
-            throw new RequestException(ErrorCode.ORDERS_ERROR_UNAUTHORIZED, "Not allowed to update.");
-        }
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         Orders orders = ordersRepository.findById(updateStateOrdersForm.getId()).orElse(null);
         if(orders == null){
@@ -301,6 +298,20 @@ public class OrdersController extends ABasicController{
         Integer prevState = orders.getState();
         orders.setState(updateStateOrdersForm.getState());
         orders.setPrevState(prevState);
+
+        // UPDATE SOLD AMOUNT OF PRODUCT
+        if(orders.getState().equals(Constants.ORDERS_STATE_COMPLETED)){
+            List<OrdersDetail> ordersDetailList = ordersDetailRepository.findAllByOrdersId(orders.getId());
+            for (OrdersDetail ordersDetail : ordersDetailList){
+                Product productCheck = productRepository.findById(ordersDetail.getProduct().getId()).orElse(null);
+                if (productCheck == null){
+                    throw new RequestException(ErrorCode.PRODUCT_NOT_FOUND, "product not existed");
+                }
+                Integer soldAmount = productCheck.getSoldAmount() + 1;
+                productCheck.setSoldAmount(soldAmount);
+                productRepository.save(productCheck);
+            }
+        }
         ordersRepository.save(orders);
         apiMessageDto.setMessage("Update orders state success");
         return apiMessageDto;

@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import java.util.List;
 
 public interface OrdersDetailRepository extends JpaRepository<OrdersDetail, Long>, JpaSpecificationExecutor<OrdersDetail> {
-    List<OrdersDetail> findAllById(Long id);
+    List<OrdersDetail> findAllByOrdersId(Long id);
 }

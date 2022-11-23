@@ -30,6 +30,24 @@ public interface ProductMapper {
     @Mapping(source = "productConfigs", target = "productConfigs", qualifiedByName = "fromCreateProductConfigFormListToEntityListMapper")
     Product fromCreateProductFormToEntity(CreateProductForm createProductForm);
 
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "name", target = "name")
+    @Mapping(source = "saleOff", target = "saleOff")
+    @Mapping(source = "tags", target = "tags")
+    @Mapping(source = "isSaleOff", target = "isSaleOff")
+    @Mapping(source = "image", target = "image")
+    @Mapping(source = "category.id", target = "productCategoryId")
+    @Mapping(source = "avgStar", target = "avgStar")
+    @Mapping(source = "totalReview", target = "totalReview")
+    @Mapping(source = "soldAmount", target = "soldAmount")
+    @Mapping(source = "price", target = "price")
+    @BeanMapping(ignoreByDefault = true)
+    @Named("clientGetMapping")
+    ProductDto fromEntityToClientDto(Product product);
+
+    @IterableMapping(elementTargetType = ProductDto.class, qualifiedByName = "clientGetMapping")
+    List<ProductDto> fromEntityListToProductClientDtoList(List<Product> products);
+
     @Named("fromProductEntityToDtoMapper")
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id", target = "id")

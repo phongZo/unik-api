@@ -54,6 +54,22 @@ public class ProductController extends ABasicController {
         );
     }
 
+    @GetMapping(value = "/client-list", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiMessageDto<ResponseListObj<ProductDto>> clientList(ProductCriteria productCriteria, Pageable pageable) {
+        ApiMessageDto<ResponseListObj<ProductDto>> responseListObjApiMessageDto = new ApiMessageDto<>();
+
+        Page<Product> productList = productRepository.findAll(productCriteria.getSpecification(), pageable);
+        ResponseListObj<ProductDto> responseListObj = new ResponseListObj<>();
+        responseListObj.setData(productMapper.fromEntityListToProductClientDtoList(productList.getContent()));
+        responseListObj.setPage(pageable.getPageNumber());
+        responseListObj.setTotalPage(productList.getTotalPages());
+        responseListObj.setTotalElements(productList.getTotalElements());
+
+        responseListObjApiMessageDto.setData(responseListObj);
+        responseListObjApiMessageDto.setMessage("Get list success");
+        return responseListObjApiMessageDto;
+    }
+
     @GetMapping(value = "/auto-complete", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<List<ProductDto>> autoComplete(@Valid ProductCriteria productCriteria) {
         Page<Product> productPage = productRepository.findAll(productCriteria.getSpecification(), Pageable.unpaged());

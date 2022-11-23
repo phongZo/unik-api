@@ -48,6 +48,7 @@ public interface CustomerMapper {
     @Mapping(source = "account", target = "account", qualifiedByName = "fromEntityToAccountDtoMapper")
     @Mapping(source = "gender", target = "gender")
     @Mapping(source = "birthday", target = "birthday")
+    @Mapping(source = "walletMoney", target = "walletMoney")
     @Mapping(source = "note", target = "note")
     CustomerDto fromCustomerEntityToDto(Customer customer);
 

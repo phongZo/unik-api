@@ -19,6 +19,8 @@ public class CustomerDto {
     @ApiModelProperty("id")
     private Long id;
 
+    private Double walletMoney;
+
     @ApiModelProperty("account")
     private AccountDto account;
 

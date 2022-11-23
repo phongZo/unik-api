@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 public class ProductCriteria {
     private Long id;
     private Long categoryId;
+    private Boolean isSaleOff;
     private List<String> tags;
     private String description;
     private String name;
@@ -57,6 +58,11 @@ public class ProductCriteria {
 
             if (getName() != null) {
                 predicates.add(cb.like(cb.lower(root.get("name")), "%" + getName().toLowerCase() + ""));
+            }
+
+            if (getIsSaleOff() != null){
+                criteriaQuery.orderBy(cb.desc(root.get("soldAmount")));
+                predicates.add(cb.equal(root.get("isSaleOff"), getIsSaleOff()));
             }
 
             if (getFromPrice() != null) {

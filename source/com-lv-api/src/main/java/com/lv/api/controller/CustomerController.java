@@ -4,17 +4,15 @@ import com.lv.api.constant.Constants;
 import com.lv.api.dto.ApiMessageDto;
 import com.lv.api.dto.ErrorCode;
 import com.lv.api.dto.ResponseListObj;
-import com.lv.api.dto.customer.CustomerAddressDto;
 import com.lv.api.dto.customer.CustomerAdminDto;
 import com.lv.api.dto.customer.CustomerDto;
+import com.lv.api.form.wallet.RechargeForm;
 import com.lv.api.exception.RequestException;
 import com.lv.api.form.customer.*;
 import com.lv.api.mapper.CustomerMapper;
 import com.lv.api.service.CommonApiService;
-import com.lv.api.storage.criteria.CustomerAddressCriteria;
 import com.lv.api.storage.criteria.CustomerCriteria;
 import com.lv.api.storage.model.Customer;
-import com.lv.api.storage.model.CustomerAddress;
 import com.lv.api.storage.model.Group;
 import com.lv.api.storage.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -26,10 +24,8 @@ import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/v1/customer")
@@ -113,6 +109,22 @@ public class CustomerController extends ABasicController {
         //rank?
         customerRepository.save(customer);
         return new ApiMessageDto<>("Create customer successfully");
+    }
+
+    @PostMapping(value = "/wallet-recharge", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiMessageDto<String> WalletRecharge(@Valid @RequestBody RechargeForm rechargeForm, BindingResult bindingResult) {
+        if(!isCustomer()){
+            throw new RequestException(ErrorCode.CUSTOMER_ERROR_UNAUTHORIZED, "Not allow recharge");
+        }
+        Customer customer = customerRepository.findCustomerByAccountId(getCurrentUserId());
+        if(customer == null){
+            throw new RequestException(ErrorCode.CUSTOMER_ERROR_NOT_FOUND, "Customer not found");
+        }
+        Double currentWalletMoney = customer.getWalletMoney();
+        currentWalletMoney += rechargeForm.getMoney();
+        customer.setWalletMoney(currentWalletMoney);
+        customerRepository.save(customer);
+        return new ApiMessageDto<>("Recharge successfully");
     }
 
     @PutMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE)

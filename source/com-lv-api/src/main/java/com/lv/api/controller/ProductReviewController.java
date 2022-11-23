@@ -79,6 +79,13 @@ public class ProductReviewController extends ABasicController{
         productReview.setProduct(product);
         productReview.setCustomer(customer);
         productReviewRepository.save(productReview);
+
+        Integer productTotalReview = product.getTotalReview() + 1;
+        float productNewAvgStar = (product.getAvgStar() * product.getTotalReview() + 1) / productTotalReview;
+
+        product.setAvgStar((float) Math.round(productNewAvgStar * 10) / 10);
+        product.setTotalReview(productTotalReview);
+        productRepository.save(product);
         apiMessageDto.setMessage("Create Product Review success");
         return apiMessageDto;
     }
@@ -97,6 +104,12 @@ public class ProductReviewController extends ABasicController{
         productReview.setProduct(product);
         productReview.setCustomer(customer);
         productReviewRepository.save(productReview);
+        Integer productTotalReview = product.getTotalReview() + 1;
+        float productNewAvgStar = (product.getAvgStar() * product.getTotalReview() + 1) / productTotalReview;
+
+        product.setAvgStar((float) Math.round(productNewAvgStar * 10) / 10);
+        product.setTotalReview(productTotalReview);
+        productRepository.save(product);
         apiMessageDto.setMessage("Create Product Review success");
         return apiMessageDto;
     }
