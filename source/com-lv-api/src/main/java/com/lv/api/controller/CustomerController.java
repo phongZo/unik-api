@@ -90,8 +90,10 @@ public class CustomerController extends ABasicController {
         if(!isCustomer()){
             throw new RequestException(ErrorCode.CUSTOMER_ERROR_UNAUTHORIZED, "Not allowed get profile");
         }
-        Customer customer = customerRepository.findById(getCurrentUserId())
-                .orElseThrow(() -> new RequestException(ErrorCode.CUSTOMER_ERROR_NOT_FOUND, "Customer not found"));
+        Customer customer = customerRepository.findCustomerByAccountId(getCurrentUserId());
+        if (customer == null || !customer.getStatus().equals(Constants.STATUS_ACTIVE)){
+            throw new RequestException(ErrorCode.CUSTOMER_ERROR_NOT_FOUND, "Customer not found");
+        }
         return new ApiMessageDto<>(customerMapper.fromCustomerEntityToDto(customer), "Get customer successfully");
     }
 
