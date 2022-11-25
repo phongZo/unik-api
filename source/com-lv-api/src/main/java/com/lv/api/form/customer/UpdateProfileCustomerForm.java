@@ -13,10 +13,6 @@ import java.time.LocalDate;
 @Setter
 public class UpdateProfileCustomerForm {
 
-    @NotNull(message = "Id can not be null")
-    @ApiModelProperty(value = "id", required = true)
-    private Long id;
-
     @NotBlank(message = "Name can not be blank")
     @ApiModelProperty(value = "fullName", required = true)
     private String fullName;

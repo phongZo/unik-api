@@ -172,8 +172,10 @@ public class CustomerController extends ABasicController {
         if (!isCustomer()) {
             throw new RequestException(ErrorCode.CUSTOMER_ERROR_UNAUTHORIZED, "Not allowed get list.");
         }
-        Customer customer = customerRepository.findById(updateProfileCustomerForm.getId())
-                .orElseThrow(() -> new RequestException(ErrorCode.CUSTOMER_ERROR_NOT_FOUND, "Customer not found"));
+        Customer customer = customerRepository.findCustomerByAccountId(getCurrentUserId());
+        if (customer == null || !customer.getStatus().equals(Constants.STATUS_ACTIVE)){
+            throw new RequestException(ErrorCode.CUSTOMER_ERROR_NOT_FOUND, "Customer not found");
+        }
         if (StringUtils.isNoneBlank(updateProfileCustomerForm.getAvatar()) && !updateProfileCustomerForm.getAvatar().equals(customer.getAccount().getAvatarPath()))
             commonApiService.deleteFile(customer.getAccount().getAvatarPath());
         customerMapper.fromUpdateProfileCustomerFormToEntity(updateProfileCustomerForm, customer);
