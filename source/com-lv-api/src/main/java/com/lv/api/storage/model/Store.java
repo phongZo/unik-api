@@ -30,6 +30,6 @@ public class Store extends Auditable<String> {
     @Column(name = "address_details")
     private String addressDetails;
 
-    @Column(name = "is_in_open_time")
-    private Boolean isInOpenTime;
+    @Column(name = "is_accept_order")
+    private Boolean isAcceptOrder;
 }

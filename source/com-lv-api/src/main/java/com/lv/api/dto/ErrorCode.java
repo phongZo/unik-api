@@ -65,6 +65,13 @@ public class ErrorCode {
     public static final String STORE_ERROR_BAD_REQUEST = "ERROR-STORE-002";
 
     /**
+     * Store error code
+     */
+    public static final String CART_ERROR_UNAUTHORIZED = "ERROR-CART-000";
+    public static final String CART_ERROR_NOT_FOUND = "ERROR-CART-001";
+    public static final String CART_ERROR_BAD_REQUEST = "ERROR-CART-002";
+
+    /**
      * Permission error code
      */
     public static final String PERMISSION_ERROR_UNAUTHORIZED = "ERROR-PERMISSION-000";
@@ -108,9 +115,16 @@ public class ErrorCode {
      * Product review error code
      */
     public static final String PRODUCT_REVIEW_ERROR_UNAUTHORIZED = "ERROR-PRODUCT-REVIEW-000";
-
     public static final String PRODUCT_REVIEW_ERROR_NOT_FOUND = "ERROR-PRODUCT-REVIEW-001";
     public static final String PRODUCT_REVIEW_ERROR_BAD_REQUEST = "ERROR-PRODUCT-REVIEW-002";
+
+
+    /**
+     * Line Item error code
+     */
+    public static final String LINE_ITEM_ERROR_UNAUTHORIZED = "ERROR-ITEM-000";
+    public static final String LINE_ITEM_ERROR_NOT_FOUND = "ERROR-ITEM-001";
+    public static final String LINE_ITEM_ERROR_BAD_REQUEST = "ERROR-ITEM-002";
 
 
     /**

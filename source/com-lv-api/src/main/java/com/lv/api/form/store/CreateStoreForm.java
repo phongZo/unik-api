@@ -10,28 +10,29 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 public class CreateStoreForm {
+    @NotNull(message = "isAcceptOrder can not be blank")
+    @ApiModelProperty(name = "isAcceptOrder", required = true)
+    private Boolean isAcceptOrder;
+
+    @NotBlank(message = "posId can not be blank")
+    @ApiModelProperty(name = "posId", required = true)
+    private String posId;
+
+    @NotBlank(message = "sessionId can not be blank")
+    @ApiModelProperty(name = "sessionId", required = true)
+    private String sessionId;
 
     @NotBlank(message = "Name can not be blank")
     @ApiModelProperty(name = "name", required = true)
     private String name;
 
-    @ApiModelProperty(name = "latitude")
+    @NotNull(message = "latitude can not be blank")
+    @ApiModelProperty(name = "latitude", required = true)
     private Double latitude;
 
-    @ApiModelProperty(name = "longitude")
+    @NotNull(message = "longitude can not be blank")
+    @ApiModelProperty(name = "longitude", required = true)
     private Double longitude;
-
-    @NotNull(message = "Province id can not be null")
-    @ApiModelProperty(name = "provinceId", required = true)
-    private Long provinceId;
-
-    @NotNull(message = "District id can not be null")
-    @ApiModelProperty(name = "districtId", required = true)
-    private Long districtId;
-
-    @NotNull(message = "Ward id can not be null")
-    @ApiModelProperty(name = "wardId", required = true)
-    private Long wardId;
 
     @NotBlank(message = "Address details can not be blank")
     @ApiModelProperty(name = "addressDetails", required = true)

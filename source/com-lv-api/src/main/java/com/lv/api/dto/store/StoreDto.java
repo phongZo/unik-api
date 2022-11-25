@@ -7,6 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class StoreDto {
+    private String posId;
+    private Boolean isAcceptOrder;
 
     @ApiModelProperty(name = "id")
     private Long id;

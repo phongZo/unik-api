@@ -8,16 +8,18 @@ import com.lv.api.dto.product.ProductAdminDto;
 import com.lv.api.dto.product.ProductDto;
 import com.lv.api.exception.RequestException;
 import com.lv.api.form.product.CreateProductForm;
+import com.lv.api.form.product.UpdateFavoriteForm;
 import com.lv.api.form.product.UpdateProductForm;
 import com.lv.api.mapper.ProductMapper;
 import com.lv.api.service.CommonApiService;
 import com.lv.api.storage.criteria.ProductCriteria;
-import com.lv.api.storage.model.Product;
-import com.lv.api.storage.model.ProductCategory;
+import com.lv.api.storage.model.*;
+import com.lv.api.storage.repository.CustomerRepository;
 import com.lv.api.storage.repository.ProductCategoryRepository;
 import com.lv.api.storage.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -40,6 +42,9 @@ public class ProductController extends ABasicController {
     private final ProductCategoryRepository productCategoryRepository;
     private final ProductMapper productMapper;
     private final CommonApiService commonApiService;
+
+    @Autowired
+    CustomerRepository customerRepository;
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<ResponseListObj<ProductAdminDto>> list(@Valid ProductCriteria productCriteria, BindingResult bindingResult, Pageable pageable) {

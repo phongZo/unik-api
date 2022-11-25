@@ -6,7 +6,6 @@ import com.lv.api.dto.ResponseListObj;
 import com.lv.api.dto.store.StoreDto;
 import com.lv.api.exception.RequestException;
 import com.lv.api.form.store.CreateStoreForm;
-import com.lv.api.form.store.UpdateStoreForm;
 import com.lv.api.mapper.StoreMapper;
 import com.lv.api.storage.criteria.StoreCriteria;
 import com.lv.api.storage.model.Store;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/v1/store")
@@ -55,25 +53,26 @@ public class StoreController extends ABasicController {
         return new ApiMessageDto<>(storeMapper.fromStoreEntityToDto(store), "Get store successfully");
     }
 
-    /*@PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> create(@Valid @RequestBody CreateStoreForm createStoreForm, BindingResult bindingResult) {
-        Location ward = locationRepository.findById(createStoreForm.getWardId())
-                .orElseThrow(() -> new RequestException(ErrorCode.LOCATION_ERROR_NOTFOUND, "Ward not found"));
-        Location district = ward.getParent();
-        Location province = district.getParent();
-        if (!Objects.equals(district.getId(), createStoreForm.getDistrictId()))
-            throw new RequestException(ErrorCode.LOCATION_ERROR_INVALID, "Invalid district");
-        if (!Objects.equals(province.getId(), createStoreForm.getProvinceId()))
-            throw new RequestException(ErrorCode.LOCATION_ERROR_INVALID, "Invalid province");
-        Store store = storeMapper.fromCreateStoreFormToEntity(createStoreForm);
-        store.setProvince(province);
-        store.setDistrict(district);
-        store.setWard(ward);
+        if(!isAdmin()){
+            throw new RequestException(ErrorCode.STORE_ERROR_UNAUTHORIZED, "Not allowed to create.");
+        }
+        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+
+        //check pos id unique
+        Store store = storeRepository.findByPosId(createStoreForm.getPosId());
+        if(store != null){
+            throw new RequestException(ErrorCode.STORE_ERROR_BAD_REQUEST, "Store existed.");
+        }
+
+        store = storeMapper.fromCreateStoreFormToEntity(createStoreForm);
         storeRepository.save(store);
-        return new ApiMessageDto<>("Create store successfully");
+        apiMessageDto.setMessage("Create store success");
+        return apiMessageDto;
     }
 
-    @PutMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
+/*    @PutMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> update(@Valid @RequestBody UpdateStoreForm updateStoreForm, BindingResult bindingResult) {
         Store store = storeRepository.findById(updateStoreForm.getId())
                 .orElseThrow(() -> new RequestException(ErrorCode.STORE_ERROR_NOT_FOUND, "Store not found"));

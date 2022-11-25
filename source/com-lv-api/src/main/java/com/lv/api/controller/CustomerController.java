@@ -6,18 +6,23 @@ import com.lv.api.dto.ErrorCode;
 import com.lv.api.dto.ResponseListObj;
 import com.lv.api.dto.customer.CustomerAdminDto;
 import com.lv.api.dto.customer.CustomerDto;
+import com.lv.api.dto.product.ProductAdminDto;
+import com.lv.api.form.product.UpdateFavoriteForm;
 import com.lv.api.form.wallet.RechargeForm;
 import com.lv.api.exception.RequestException;
 import com.lv.api.form.customer.*;
 import com.lv.api.mapper.CustomerMapper;
 import com.lv.api.service.CommonApiService;
 import com.lv.api.storage.criteria.CustomerCriteria;
+import com.lv.api.storage.criteria.ProductCriteria;
 import com.lv.api.storage.model.Customer;
 import com.lv.api.storage.model.Group;
+import com.lv.api.storage.model.Product;
 import com.lv.api.storage.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -40,11 +45,56 @@ public class CustomerController extends ABasicController {
     private final CustomerMapper customerMapper;
     private final CommonApiService commonApiService;
 
+    @Autowired
+    ProductRepository productRepository;
+
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<ResponseListObj<CustomerAdminDto>> list(CustomerCriteria customerCriteria, BindingResult bindingResult, Pageable pageable) {
         Page<Customer> customerPage = customerRepository.findAll(customerCriteria.getSpecification(), pageable);
         List<CustomerAdminDto> customerDtoList = customerMapper.fromListCustomerEntityToListAdminDto(customerPage.getContent());
         return new ApiMessageDto<>(new ResponseListObj<>(customerDtoList, customerPage), "Get list successfully");
+    }
+
+/*    @GetMapping(value = "/favorite/list", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiMessageDto<ResponseListObj<ProductAdminDto>> listFavorite(@Valid ProductCriteria productCriteria, BindingResult bindingResult, Pageable pageable) {
+        Page<Product> productPage = productRepository.findAll(productCriteria.getSpecification(), pageable);
+        List<ProductAdminDto> productAdminDtoList = productMapper.fromProductEntityListToAdminDtoList(productPage.getContent());
+        return new ApiMessageDto<>(
+                new ResponseListObj<>(
+                        productAdminDtoList,
+                        productPage
+                ),
+                "Get list product successfully"
+        );
+    }*/
+
+    @PutMapping(value = "/favorite/update", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiMessageDto<String> updateFavorite(@Valid @RequestBody UpdateFavoriteForm updateFavoriteForm, BindingResult bindingResult) {
+        if(!isCustomer()){
+            throw new RequestException(ErrorCode.CART_ERROR_UNAUTHORIZED, "Not allowed to add item.");
+        }
+        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+        Product product = productRepository.findById(updateFavoriteForm.getProductId()).orElse(null);
+        if(product == null || product.getIsSoldOut()|| !product.getStatus().equals(Constants.STATUS_ACTIVE)){
+            throw new RequestException(ErrorCode.PRODUCT_NOT_FOUND, "Not found product.");
+        }
+        Customer customer = getCurrentCustomer();
+        if(customer.getFavoriteProducts().contains(product)){
+            customer.getFavoriteProducts().remove(product);
+        }else {
+            customer.getFavoriteProducts().add(product);
+        }
+        customerRepository.save(customer);
+        apiMessageDto.setMessage("Update favorite success");
+        return apiMessageDto;
+    }
+
+    private Customer getCurrentCustomer() {
+        Customer customer = customerRepository.findCustomerByAccountId(getCurrentUserId());
+        if(customer == null || !customer.getStatus().equals(Constants.STATUS_ACTIVE)){
+            throw new RequestException(ErrorCode.CUSTOMER_ERROR_NOT_FOUND,"Customer not found");
+        }
+        return customer;
     }
 
     @GetMapping(value = "/auto-complete", produces = MediaType.APPLICATION_JSON_VALUE)
