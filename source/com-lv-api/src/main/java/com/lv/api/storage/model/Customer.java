@@ -38,11 +38,4 @@ public class Customer extends Auditable<String> {
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<CustomerAddress> customerAddresses;
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-    @JoinTable(name = TablePrefix.PREFIX_TABLE+"customer_favorites",
-            joinColumns = @JoinColumn(name = "customer_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id",
-                    referencedColumnName = "id"))
-    private List<Product> favoriteProducts = new ArrayList<>();
 }

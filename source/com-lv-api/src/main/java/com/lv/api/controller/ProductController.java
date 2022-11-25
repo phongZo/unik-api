@@ -75,6 +75,38 @@ public class ProductController extends ABasicController {
         return responseListObjApiMessageDto;
     }
 
+
+
+    @PutMapping(value = "/favorite/update", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiMessageDto<String> updateFavorite(@Valid @RequestBody UpdateFavoriteForm updateFavoriteForm, BindingResult bindingResult) {
+        if(!isCustomer()){
+            throw new RequestException(ErrorCode.CART_ERROR_UNAUTHORIZED, "Not allowed to add item.");
+        }
+        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+        Product product = productRepository.findById(updateFavoriteForm.getProductId()).orElse(null);
+        if(product == null || product.getIsSoldOut()|| !product.getStatus().equals(Constants.STATUS_ACTIVE)){
+            throw new RequestException(ErrorCode.PRODUCT_NOT_FOUND, "Not found product.");
+        }
+        Customer customer = getCurrentCustomer();
+        if(product.getCustomersLiked().contains(customer)){
+            product.getCustomersLiked().remove(customer);
+        } else{
+            product.getCustomersLiked().add(customer);
+        }
+        customerRepository.save(customer);
+        apiMessageDto.setMessage("Update favorite success");
+        return apiMessageDto;
+    }
+
+    private Customer getCurrentCustomer() {
+        Long userId = getCurrentUserId();
+        Customer customer = customerRepository.findCustomerByAccountId(userId);
+        if(customer == null || !customer.getStatus().equals(Constants.STATUS_ACTIVE)){
+            throw new RequestException(ErrorCode.CUSTOMER_ERROR_NOT_FOUND, "Not found current customer.");
+        }
+        return customer;
+    }
+
     @GetMapping(value = "/auto-complete", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<List<ProductDto>> autoComplete(@Valid ProductCriteria productCriteria) {
         Page<Product> productPage = productRepository.findAll(productCriteria.getSpecification(), Pageable.unpaged());

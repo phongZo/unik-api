@@ -1,5 +1,6 @@
 package com.lv.api.storage.criteria;
 
+import com.lv.api.storage.model.Customer;
 import com.lv.api.storage.model.Product;
 import com.lv.api.storage.model.ProductConfig;
 import com.lv.api.validation.ProductKind;
@@ -27,6 +28,7 @@ public class ProductCriteria {
     private Double toPrice;
     private Boolean isSoldOut;
     private Long parentProduct;
+    private Long customerId;
     @ProductKind
     private Integer kind;
     private List<String> variantNames;
@@ -41,6 +43,11 @@ public class ProductCriteria {
 
             if (getCategoryId() != null) {
                 predicates.add(cb.equal(root.get("categoryId"), getCategoryId()));
+            }
+            if(getCustomerId() != null){
+                Join<Product, Customer> productCustomerJoin = root.join("productCustomerJoin", JoinType.INNER);
+                predicates.add(cb.equal(productCustomerJoin.get("customer_id"), getCustomerId()));
+                criteriaQuery.distinct(true);
             }
 
             if (getTags() != null) {
