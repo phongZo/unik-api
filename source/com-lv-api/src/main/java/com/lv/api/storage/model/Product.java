@@ -24,11 +24,11 @@ public class Product extends Auditable<String> {
     @Column(name = "tag")
     private String tags;
 
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     @Column(name = "avg_star")
-    private float avgStar;
+    private float avgStar = 0f;
     private Integer totalReview;
 
     @Column(name = "sold_amount")
