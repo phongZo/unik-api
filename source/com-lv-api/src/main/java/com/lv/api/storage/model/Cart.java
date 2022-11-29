@@ -16,7 +16,7 @@ public class Cart extends Auditable<String>{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(cascade = {CascadeType.ALL})
+    @OneToOne()
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
