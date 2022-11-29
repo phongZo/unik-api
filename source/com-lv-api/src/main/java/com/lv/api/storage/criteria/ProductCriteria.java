@@ -2,6 +2,7 @@ package com.lv.api.storage.criteria;
 
 import com.lv.api.storage.model.Customer;
 import com.lv.api.storage.model.Product;
+import com.lv.api.storage.model.ProductCategory;
 import com.lv.api.storage.model.ProductConfig;
 import com.lv.api.validation.ProductKind;
 import lombok.Getter;
@@ -42,7 +43,8 @@ public class ProductCriteria {
             }
 
             if (getCategoryId() != null) {
-                predicates.add(cb.equal(root.get("categoryId"), getCategoryId()));
+                Join<Product, ProductCategory> productCategoryJoin = root.join("category", JoinType.INNER);
+                predicates.add(cb.equal(productCategoryJoin.get("id"), getCategoryId()));
             }
             if(getCustomerId() != null){
                 Join<Product, Customer> productCustomerJoin = root.join("productCustomerJoin", JoinType.INNER);
