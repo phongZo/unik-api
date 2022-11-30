@@ -25,6 +25,9 @@ public class Constants {
     public static final Integer PROMOTION_KIND_MONEY = 1;
     public static final Integer PROMOTION_KIND_PERCENT = 2;
 
+    public static final Integer ADDRESS_TYPE_HOME = 1;
+    public static final Integer ADDRESS_TYPE_OFFICE = 2;
+
     public static final Integer ORDERS_STATE_CREATED = 0;
     public static final Integer ORDERS_STATE_ACCEPTED = 1;
     public static final Integer ORDERS_STATE_SHIPPING = 2;

@@ -118,7 +118,6 @@ public interface CustomerMapper {
     @Mapping(source = "receiverFullName", target = "receiverFullName")
     @Mapping(source = "phone", target = "phone")
     @Mapping(source = "isDefault", target = "isDefault")
-    @Mapping(source = "note", target = "note")
     CustomerAddress fromCreateAddressFormToCustomerAddress(CreateAddressForm createAddressForm);
 
     @Named("fromUpdateAddressFormToCustomerAddressMapper")
@@ -127,6 +126,5 @@ public interface CustomerMapper {
     @Mapping(source = "receiverFullName", target = "receiverFullName")
     @Mapping(source = "phone", target = "phone")
     @Mapping(source = "isDefault", target = "isDefault")
-    @Mapping(source = "note", target = "note")
     void fromUpdateAddressFormToCustomerAddress(UpdateAddressForm updateAddressForm, @MappingTarget CustomerAddress customerAddress);
 }

@@ -31,6 +31,8 @@ public class CustomerAddress extends Auditable<String>{
     @Column(name = "is_default")
     private Boolean isDefault;
 
+    private Integer typeAddress;
+
     @Column(name = "note")
     private String note;
 }

@@ -10,17 +10,6 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 public class CreateAddressForm {
-    @NotNull(message = "Province id can not be null")
-    @ApiModelProperty(name = "provinceId", required = true)
-    private Long provinceId;
-
-    @NotNull(message = "District id can not be null")
-    @ApiModelProperty(name = "districtId", required = true)
-    private Long districtId;
-
-    @NotNull(message = "Ward id can not be null")
-    @ApiModelProperty(name = "wardId", required = true)
-    private Long wardId;
 
     @NotBlank(message = "Address details can not be blank")
     @ApiModelProperty(name = "addressDetails", required = true)
@@ -38,6 +27,5 @@ public class CreateAddressForm {
     @ApiModelProperty(name = "isDefault", required = true)
     private Boolean isDefault;
 
-    @ApiModelProperty(name = "note")
-    private String note;
+    private Integer typeAddress;
 }
