@@ -11,6 +11,7 @@ import java.util.List;
 @Data
 public class OrdersDto extends ABasicAdminDto {
     private Long id;
+    private Integer amount;
     private CustomerDto customerDto;
     private Integer saleOff;
     private Double totalMoney;

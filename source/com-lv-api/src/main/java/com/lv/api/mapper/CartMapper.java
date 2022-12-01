@@ -15,7 +15,6 @@ public interface CartMapper {
 
     @Named("fromEntityToCartDtoMapper")
     @Mapping(source = "id", target = "id")
-    @Mapping(source = "lineItemList", target = "lineItemDtoList", qualifiedByName = "fromEntityToLineItemDtoMapper")
     CartDto fromEntityToCartDto(Cart cart);
 
 

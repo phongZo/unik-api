@@ -4,6 +4,7 @@ import com.lv.api.constant.Constants;
 import com.lv.api.dto.ApiMessageDto;
 import com.lv.api.dto.ErrorCode;
 import com.lv.api.dto.cart.CartDto;
+import com.lv.api.dto.cart.LineItemDto;
 import com.lv.api.exception.RequestException;
 import com.lv.api.form.cart.AddItemForm;
 import com.lv.api.form.cart.UpdateCartQuantity;
@@ -18,7 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.sound.sampled.Line;
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1/cart")
@@ -56,10 +60,13 @@ public class CartController extends ABasicController{
             cart = cartRepository.save(cart);
         }
         CartDto dto = cartMapper.fromEntityToCartDto(cart);
-        if(cart.getLineItemList().isEmpty()){
+        List<LineItem> list = lineItemRepository.findByCartId(cart.getId());
+        if(list != null && !list.isEmpty()){
             Double totalMoney = 0d;
-            for (LineItem lineItem : cart.getLineItemList()){
+            for (LineItem lineItem : list){
                 Product product = lineItem.getProduct();
+                LineItemDto lineItemDto = cartMapper.fromEntityToLineItemDto(lineItem);
+                dto.getLineItemDtoList().add(lineItemDto);
                 if(product.getIsSaleOff()){
                     float saleOffValue = 0;
                     if(product.getSaleOff() != null){

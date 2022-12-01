@@ -19,7 +19,6 @@ public interface OrdersMapper {
     Orders fromCreateOrdersFormToEntity(CreateOrdersClientForm createOrdersForm);
 
     @Mapping(source = "id", target = "id")
-    @Mapping(source = "customer", target = "customerDto",qualifiedByName="customerAutoCompleteMapping")
     @Mapping(source = "saleOff", target = "saleOff")
     @Mapping(source = "totalMoney", target = "totalMoney")
     @Mapping(source = "state", target = "state")
@@ -29,6 +28,7 @@ public interface OrdersMapper {
     @Mapping(source = "store.id", target = "storeId")
     @Mapping(source = "paymentMethod", target = "paymentMethod")
     @Mapping(source = "deliveryFee", target = "deliveryFee")
+    @Mapping(source = "amount", target = "amount")
     @Mapping(source = "expectedReceiveDate", target = "expectedReceiveDate")
     @Mapping(source = "note", target = "note")
     @Mapping(source = "address", target = "customerAddressDto", qualifiedByName = "clientGetCustomerAddress")

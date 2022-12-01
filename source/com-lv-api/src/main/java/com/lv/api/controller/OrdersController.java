@@ -24,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.sound.sampled.Line;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -43,6 +44,9 @@ public class OrdersController extends ABasicController{
 
     @Autowired
     CustomerRepository customerRepository;
+
+    @Autowired
+    LineItemRepository lineItemRepository;
 
     @Autowired
     EmployeeRepository employeeRepository;
@@ -137,20 +141,27 @@ public class OrdersController extends ABasicController{
 
 
     @GetMapping(value = "/client-list",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiMessageDto<ResponseListObj<OrdersDto>> clientList(OrdersCriteria ordersCriteria, Pageable pageable){
+    public ApiMessageDto<ResponseListObj<OrdersDto>> clientList(OrdersCriteria ordersCriteria){
         if(!isCustomer()){
             throw new RequestException(ErrorCode.ORDERS_ERROR_UNAUTHORIZED, "Not allowed get.");
         }
         ApiMessageDto<ResponseListObj<OrdersDto>> responseListObjApiMessageDto = new ApiMessageDto<>();
         Customer customer = getCurrentCustomer();
         ordersCriteria.setCustomerId(customer.getId());
-        Page<Orders> listOrders = ordersRepository.findAll(ordersCriteria.getSpecification(), pageable);
+        List<Orders> listOrders = ordersRepository.findAll(ordersCriteria.getSpecification());
+        List<OrdersDetail> listFirstDetail = ordersDetailRepository.findFirstByListOrders(listOrders);
+        List<OrdersDto> dto = ordersMapper.fromEntityListToOrdersDtoList(listOrders);
+        for (OrdersDto ordersDto : dto){
+            List<OrdersDetail> detailList = new ArrayList<>();
+            for (OrdersDetail detail : listFirstDetail){
+                if(detail.getOrders().getId().equals(ordersDto.getId())){
+                    detailList.add(detail);
+                }
+            }
+            ordersDto.setOrdersDetailDtoList(ordersDetailMapper.fromEntityListToOrdersDetailDtoList(detailList));
+        }
         ResponseListObj<OrdersDto> responseListObj = new ResponseListObj<>();
-        responseListObj.setData(ordersMapper.fromEntityListToOrdersDtoList(listOrders.getContent()));
-        responseListObj.setPage(pageable.getPageNumber());
-        responseListObj.setTotalPage(listOrders.getTotalPages());
-        responseListObj.setTotalElements(listOrders.getTotalElements());
-
+        responseListObj.setData(dto);
         responseListObjApiMessageDto.setData(responseListObj);
         responseListObjApiMessageDto.setMessage("Get list success");
         return responseListObjApiMessageDto;
@@ -193,7 +204,11 @@ public class OrdersController extends ABasicController{
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         Store store = checkStore(createOrdersForm);
         CustomerAddress address = checkAddress(createOrdersForm);
-        CustomerPromotion promotion = checkPromotion(createOrdersForm);
+        CustomerPromotion promotion = null;
+        if(createOrdersForm.getPromotionId() != null){
+            promotion = checkPromotion(createOrdersForm);
+        }
+
         List<OrdersDetail> ordersDetailList = ordersDetailMapper
                 .fromCreateOrdersDetailFormListToOrdersDetailList(createOrdersForm.getCreateOrdersDetailFormList());
         Orders orders = ordersMapper.fromCreateOrdersFormToEntity(createOrdersForm);
@@ -206,22 +221,31 @@ public class OrdersController extends ABasicController{
         }
         orders.setCode(generateCode());
         orders.setState(Constants.ORDERS_STATE_CREATED);
+
+        // calculate amount item
+        Integer amount = 0;
+        for (OrdersDetail detail : ordersDetailList){
+            amount += detail.getAmount();
+        }
+        orders.setAmount(amount);
         Orders savedOrder = ordersRepository.save(orders);
         /*-----------------------Xử lý orders detail------------------ */
         amountPriceCal(orders,ordersDetailList,savedOrder,promotion);  //Tổng tiền hóa đơn
         ordersDetailRepository.saveAll(ordersDetailList);
 
         /*-----------------------Quay lại xử lý orders------------------ */
-        orders.setCustomerPromotionId(promotion.getId());
+        if(promotion != null){
+            orders.setCustomerPromotionId(promotion.getId());
+            promotion.setIsInUse(true);
+            customerPromotionRepository.save(promotion);
+        }
         ordersRepository.save(orders);
 
         // remove cart item
         Cart cart = cartRepository.findByCustomerId(getCurrentCustomer().getId());
-        cart.setLineItemList(new ArrayList<>());
+        List<LineItem> list = lineItemRepository.findByCartId(cart.getId());
+        lineItemRepository.deleteAll(list);
         cartRepository.save(cart);
-
-        promotion.setIsInUse(true);
-        customerPromotionRepository.save(promotion);
         apiMessageDto.setMessage("Create orders success");
         return apiMessageDto;
     }
@@ -345,11 +369,17 @@ public class OrdersController extends ABasicController{
             checkIndex++;
         }
         Double totalMoney = totalMoneyHaveToPay(amountPrice,orders,promotion);
+        totalMoney += Constants.DEFAULT_DELIVERY_FEE;
         orders.setTotalMoney(totalMoney);
         orders.setVat(Constants.ORDER_VAT);
     }
 
     private Double totalMoneyHaveToPay(Double amountPrice,Orders orders, CustomerPromotion promotion) {
+        if(promotion == null){
+            double VAT = (double)Constants.ORDER_VAT / 100;             // Tính VAT (%)
+            amountPrice = amountPrice + amountPrice * VAT ;              // Tiền sau cùng bằng tiền sau khi saleOff cộng với VAT (10% tổng tiền)
+            return Math.round(amountPrice * 100.0) / 100.0;
+        }
         Integer kind = promotion.getPromotion().getKind();
         double saleOff = 0d;
         double amountAfterSaleOff = 0d;

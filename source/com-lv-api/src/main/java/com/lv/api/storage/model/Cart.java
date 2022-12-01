@@ -19,7 +19,4 @@ public class Cart extends Auditable<String>{
     @OneToOne()
     @JoinColumn(name = "customer_id")
     private Customer customer;
-
-    @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<LineItem> lineItemList = new ArrayList<>();
 }
