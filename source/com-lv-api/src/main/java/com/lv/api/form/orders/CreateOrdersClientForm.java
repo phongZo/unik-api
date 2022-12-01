@@ -10,12 +10,12 @@ import java.util.List;
 
 @Data
 public class CreateOrdersClientForm {
-    @NotNull(message = "customerAddressId cannot be empty")
+    @NotNull(message = "Yêu cầu điền địa chỉ")
     @ApiModelProperty(required = true)
     private Long customerAddressId;
 
     @PaymentMethod
-    @NotNull(message = "paymentMethod cannot be null")
+    @NotNull(message = "Yêu cầu chọn phương thức thanh toán")
     @ApiModelProperty(required = true)
     private Integer paymentMethod;
 
@@ -25,6 +25,10 @@ public class CreateOrdersClientForm {
 
     private Long promotionId;
     private Double saleOff = 0d;
+
+    @NotNull(message = "deliveryFee cannot be empty")
+    @ApiModelProperty(required = true)
+    private Double deliveryFee = 0d;
 
     @NotEmpty(message = "createOrdersDetailFormList cannot be empty")
     @ApiModelProperty(required = true)

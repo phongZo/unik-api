@@ -7,7 +7,11 @@ import javax.validation.constraints.NotNull;
 
 @Data
 public class RechargeForm {
-    @NotNull(message = "money cannot be empty")
+    @NotNull(message = "totalMoney cannot be empty")
     @ApiModelProperty(required = true)
-    private Double money;
+    private Double totalMoney;
+
+    @NotNull(message = "rechargeMoney cannot be empty")
+    @ApiModelProperty(required = true)
+    private Double rechargeMoney;
 }

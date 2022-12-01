@@ -13,6 +13,7 @@ import java.util.List;
 public interface OrdersMapper {
     @Mapping(source = "paymentMethod", target = "paymentMethod")
     @Mapping(source = "saleOff", target = "saleOff")
+    @Mapping(source = "deliveryFee", target = "deliveryFee")
     @BeanMapping(ignoreByDefault = true)
     @Named("clientCreateMapping")
     Orders fromCreateOrdersFormToEntity(CreateOrdersClientForm createOrdersForm);

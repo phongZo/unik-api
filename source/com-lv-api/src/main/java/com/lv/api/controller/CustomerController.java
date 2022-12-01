@@ -145,7 +145,10 @@ public class CustomerController extends ABasicController {
             throw new RequestException(ErrorCode.CUSTOMER_ERROR_NOT_FOUND, "Customer not found");
         }
         Double currentWalletMoney = customer.getWalletMoney();
-        currentWalletMoney += rechargeForm.getMoney();
+        if(currentWalletMoney + rechargeForm.getRechargeMoney() != rechargeForm.getTotalMoney()){
+            throw new RequestException(ErrorCode.CUSTOMER_RECHARGE_BAD_REQUEST, "Invalid recharge money");
+        }
+        currentWalletMoney += rechargeForm.getRechargeMoney();
         customer.setWalletMoney(currentWalletMoney);
         customerRepository.save(customer);
         return new ApiMessageDto<>("Recharge successfully");

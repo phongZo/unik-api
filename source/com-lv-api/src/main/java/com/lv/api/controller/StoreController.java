@@ -1,25 +1,40 @@
 package com.lv.api.controller;
 
+import com.lv.api.constant.Constants;
 import com.lv.api.dto.ApiMessageDto;
 import com.lv.api.dto.ErrorCode;
 import com.lv.api.dto.ResponseListObj;
+import com.lv.api.dto.account.LoginDto;
 import com.lv.api.dto.store.StoreDto;
+import com.lv.api.dto.store.VerifyStoreDto;
 import com.lv.api.exception.RequestException;
+import com.lv.api.form.account.LoginForm;
 import com.lv.api.form.store.CreateStoreForm;
+import com.lv.api.form.store.VerifyDeviceForm;
+import com.lv.api.intercepter.MyAuthentication;
+import com.lv.api.jwt.JWTUtils;
+import com.lv.api.jwt.UserJwt;
 import com.lv.api.mapper.StoreMapper;
 import com.lv.api.storage.criteria.StoreCriteria;
+import com.lv.api.storage.model.Account;
 import com.lv.api.storage.model.Store;
 import com.lv.api.storage.repository.StoreRepository;
+import com.lv.api.utils.DateUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/v1/store")
@@ -51,6 +66,40 @@ public class StoreController extends ABasicController {
         Store store = storeRepository.findById(id)
                 .orElseThrow(() -> new RequestException(ErrorCode.STORE_ERROR_NOT_FOUND, "Store not found"));
         return new ApiMessageDto<>(storeMapper.fromStoreEntityToDto(store), "Get store successfully");
+    }
+
+    @PostMapping(value = "/verify-device", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiMessageDto<VerifyStoreDto> verifyDevice(@Valid @RequestBody VerifyDeviceForm verifyDeviceForm, BindingResult bindingResult) {
+        ApiMessageDto<VerifyStoreDto> apiMessageDto = new ApiMessageDto<>();
+        Store store = storeRepository.findByPosId(verifyDeviceForm.getPosId());
+        if (store == null || !verifyDeviceForm.getSessionId().equals(store.getSessionId()) || !Objects.equals(store.getStatus() , Constants.STATUS_ACTIVE)) {
+            throw new RequestException(ErrorCode.STORE_ERROR_VERIFY, "Login fail, check your posId or sessionId");
+        }
+        VerifyStoreDto dto = new VerifyStoreDto();
+        dto.setToken(generateJWT(store));
+        dto.setId(store.getId());
+        dto.setName(store.getName());
+
+        apiMessageDto.setData(dto);
+        apiMessageDto.setMessage("Login store success");
+        return apiMessageDto;
+    }
+
+    private String generateJWT(Store store) {
+        LocalDate parsedDate = LocalDate.now();
+        parsedDate = parsedDate.plusDays(7);
+
+        UserJwt qrJwt = new UserJwt();
+        qrJwt.setPosId(store.getId());
+        String appendStringRole = Constants.POS_DEVICE_PERMISSION;
+        qrJwt.setDeviceId(store.getPosId());
+
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        securityContext.setAuthentication(new MyAuthentication(qrJwt));
+
+        log.info("jwt user ne: {}", qrJwt);
+        return JWTUtils.createJWT(JWTUtils.ALGORITHMS_HMAC, "authenticationToken.getId().toString()", qrJwt, DateUtils.convertToDateViaInstant(parsedDate));
+
     }
 
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)

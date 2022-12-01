@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -48,6 +49,9 @@ public class OrdersController extends ABasicController{
 
     @Autowired
     AccountRepository accountRepository;
+
+    @Autowired
+    CartRepository cartRepository;
 
     @Autowired
     ProductRepository productRepository;
@@ -210,6 +214,11 @@ public class OrdersController extends ABasicController{
         /*-----------------------Quay lại xử lý orders------------------ */
         orders.setCustomerPromotionId(promotion.getId());
         ordersRepository.save(orders);
+
+        // remove cart item
+        Cart cart = cartRepository.findByCustomerId(getCurrentCustomer().getId());
+        cart.setLineItemList(new ArrayList<>());
+        cartRepository.save(cart);
 
         promotion.setIsInUse(true);
         customerPromotionRepository.save(promotion);

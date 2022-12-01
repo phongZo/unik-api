@@ -63,6 +63,7 @@ public class ErrorCode {
     public static final String STORE_ERROR_UNAUTHORIZED = "ERROR-STORE-000";
     public static final String STORE_ERROR_NOT_FOUND = "ERROR-STORE-001";
     public static final String STORE_ERROR_BAD_REQUEST = "ERROR-STORE-002";
+    public static final String STORE_ERROR_VERIFY = "ERROR-STORE-003";
 
     /**
      * Store error code
@@ -110,6 +111,7 @@ public class ErrorCode {
 
     public static final String CUSTOMER_ERROR_NOT_FOUND = "ERROR-CUSTOMER-001";
     public static final String CUSTOMER_ADDRESS_ERROR_CANNOT_DELETE = "ERROR-CUSTOMER-002";
+    public static final String CUSTOMER_RECHARGE_BAD_REQUEST = "ERROR-CUSTOMER-003";
 
     /**
      * Product review error code

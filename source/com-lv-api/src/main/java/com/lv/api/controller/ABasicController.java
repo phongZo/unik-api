@@ -17,6 +17,12 @@ public class ABasicController {
         return authentication.getJwtUser().getAccountId();
     }
 
+    public long getCurrentStoreId(){
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        MyAuthentication authentication = (MyAuthentication)securityContext.getAuthentication();
+        return authentication.getJwtUser().getPosId();
+    }
+
     public long getCurrentPosId(){
         SecurityContext securityContext = SecurityContextHolder.getContext();
         MyAuthentication authentication = (MyAuthentication)securityContext.getAuthentication();
