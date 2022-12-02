@@ -231,6 +231,20 @@ public class OrdersController extends ABasicController{
         Orders savedOrder = ordersRepository.save(orders);
         /*-----------------------Xử lý orders detail------------------ */
         amountPriceCal(orders,ordersDetailList,savedOrder,promotion);  //Tổng tiền hóa đơn
+
+        // check wallet money if not have enough money
+        if(createOrdersForm.getPaymentMethod().equals(Constants.PAYMENT_METHOD_ONLINE)){
+            Customer customer = getCurrentCustomer();
+            if(customer.getWalletMoney() < orders.getTotalMoney()){
+                ordersRepository.delete(savedOrder);
+                apiMessageDto.setResult(false);
+                apiMessageDto.setMessage("Ví không đủ tiền");
+                return apiMessageDto;
+            } else {
+                customer.setWalletMoney(customer.getWalletMoney() - orders.getTotalMoney());
+                customerRepository.save(customer);
+            }
+        }
         ordersDetailRepository.saveAll(ordersDetailList);
 
         /*-----------------------Quay lại xử lý orders------------------ */
@@ -302,6 +316,14 @@ public class OrdersController extends ABasicController{
         Integer prevState = orders.getState();
         orders.setState(Constants.ORDERS_STATE_CANCELED);
         orders.setPrevState(prevState);
+
+        if(orders.getCustomerPromotionId() != null){
+            CustomerPromotion customerPromotion = customerPromotionRepository.findById(orders.getCustomerPromotionId()).orElse(null);
+            if(customerPromotion != null){
+                customerPromotion.setIsInUse(false);
+                customerPromotionRepository.save(customerPromotion);
+            }
+        }
         ordersRepository.save(orders);
         apiMessageDto.setMessage("Cancel order success");
         return apiMessageDto;

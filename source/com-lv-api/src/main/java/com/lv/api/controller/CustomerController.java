@@ -6,6 +6,8 @@ import com.lv.api.dto.ErrorCode;
 import com.lv.api.dto.ResponseListObj;
 import com.lv.api.dto.customer.CustomerAdminDto;
 import com.lv.api.dto.customer.CustomerDto;
+import com.lv.api.dto.customer.CustomerPromotionDto;
+import com.lv.api.dto.orders.OrdersDto;
 import com.lv.api.dto.product.ProductAdminDto;
 import com.lv.api.dto.product.ProductDto;
 import com.lv.api.form.product.UpdateFavoriteForm;
@@ -13,13 +15,13 @@ import com.lv.api.form.wallet.RechargeForm;
 import com.lv.api.exception.RequestException;
 import com.lv.api.form.customer.*;
 import com.lv.api.mapper.CustomerMapper;
+import com.lv.api.mapper.CustomerPromotionMapper;
 import com.lv.api.mapper.ProductMapper;
 import com.lv.api.service.CommonApiService;
 import com.lv.api.storage.criteria.CustomerCriteria;
+import com.lv.api.storage.criteria.CustomerPromotionCriteria;
 import com.lv.api.storage.criteria.ProductCriteria;
-import com.lv.api.storage.model.Customer;
-import com.lv.api.storage.model.Group;
-import com.lv.api.storage.model.Product;
+import com.lv.api.storage.model.*;
 import com.lv.api.storage.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +34,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -48,6 +52,15 @@ public class CustomerController extends ABasicController {
     private final CommonApiService commonApiService;
 
     @Autowired
+    CustomerPromotionMapper customerPromotionMapper;
+
+    @Autowired
+    PromotionRepository promotionRepository;
+
+    @Autowired
+    CustomerPromotionRepository customerPromotionRepository;
+
+    @Autowired
     ProductMapper productMapper;
 
     @Autowired
@@ -60,6 +73,51 @@ public class CustomerController extends ABasicController {
         return new ApiMessageDto<>(new ResponseListObj<>(customerDtoList, customerPage), "Get list successfully");
     }
 
+    @GetMapping(value = "/promotion/list", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiMessageDto<ResponseListObj<CustomerPromotionDto>> clientListPromotion(CustomerPromotionCriteria criteria, BindingResult bindingResult) {
+        if(!isCustomer()){
+            throw new RequestException(ErrorCode.CUSTOMER_ERROR_UNAUTHORIZED, "Not allowed to list promotion.");
+        }
+        ApiMessageDto<ResponseListObj<CustomerPromotionDto>> apiMessageDto = new ApiMessageDto<>();
+        criteria.setCustomerId(getCurrentCustomer().getId());
+        criteria.setInUse(false);
+        List<CustomerPromotion> list = customerPromotionRepository.findAll(criteria.getSpecification());
+        List<CustomerPromotion> result = new ArrayList<>();
+        for (CustomerPromotion customerPromotion : list){
+            if(customerPromotion.getExpireDate().after(new Date())){
+                result.add(customerPromotion);
+            }
+        }
+        ResponseListObj<CustomerPromotionDto> responseListObj = new ResponseListObj<>();
+        responseListObj.setData(customerPromotionMapper.fromListCustomerPromotionEntityToListDtoMapper(result));
+        apiMessageDto.setData(responseListObj);
+        apiMessageDto.setMessage("Get list success");
+        return apiMessageDto;
+    }
+
+    @PostMapping(value = "/promotion/approve", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiMessageDto<String> approvePromotion(@RequestBody @Valid ApprovePromotionForm approvePromotionForm,BindingResult bindingResult) {
+        if(!isAdmin()){
+            throw new RequestException(ErrorCode.CUSTOMER_ERROR_UNAUTHORIZED, "Not allowed to approve promotion.");
+        }
+        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+        // check customer
+        Customer customer = customerRepository.findById(approvePromotionForm.getCustomerId()).orElse(null);
+        if(customer == null || !customer.getStatus().equals(Constants.STATUS_ACTIVE)){
+            throw new RequestException(ErrorCode.CUSTOMER_ERROR_NOT_FOUND, "Not found customer.");
+        }
+        Promotion promotion = promotionRepository.findById(approvePromotionForm.getPromotionId()).orElse(null);
+        if(promotion == null || !promotion.getStatus().equals(Constants.STATUS_ACTIVE)){
+            throw new RequestException(ErrorCode.PROMOTION_ERROR_NOT_FOUND, "Not found promotion.");
+        }
+        if(approvePromotionForm.getExpiryDate().before(new Date())){
+            throw new RequestException(ErrorCode.PROMOTION_ERROR_BAD_REQUEST, "Promotion expiry date not valid.");
+        }
+        CustomerPromotion customerPromotion = customerPromotionMapper.fromApprovePromotionFormToEntity(approvePromotionForm);
+        customerPromotionRepository.save(customerPromotion);
+        apiMessageDto.setMessage("Approve success");
+        return apiMessageDto;
+    }
 
     private Customer getCurrentCustomer() {
         Customer customer = customerRepository.findCustomerByAccountId(getCurrentUserId());
