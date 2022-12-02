@@ -99,7 +99,7 @@ public class CartController extends ABasicController{
             throw new RequestException(ErrorCode.PRODUCT_NOT_FOUND, "Not found product.");
         }
         ProductVariant variant = variantRepository.findById(addItemForm.getProductVariantId()).orElse(null);
-        if(variant == null || !variant.getStatus().equals(Constants.STATUS_ACTIVE) || !variant.getProductConfig().getProduct().equals(product)){
+        if(variant == null || !variant.getStatus().equals(Constants.STATUS_ACTIVE) || !variant.getProductConfig().getProduct().getId().equals(product.getId())){
             throw new RequestException(ErrorCode.PRODUCT_VARIANT_NOT_FOUND, "Not found variant.");
         }
         Cart cart = cartRepository.findByCustomerId(getCurrentCustomer().getId());
