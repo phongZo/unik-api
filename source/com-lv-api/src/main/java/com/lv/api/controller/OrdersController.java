@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.sound.sampled.Line;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -99,21 +101,29 @@ public class OrdersController extends ABasicController{
 
     // Store
     @GetMapping(value = "/my-orders",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiMessageDto<ResponseListObjOrders> listMyOrders(OrdersCriteria ordersCriteria, Pageable pageable){
+    public ApiMessageDto<ResponseListObjOrders> listMyOrders(OrdersCriteria ordersCriteria){
         Long posId = getCurrentPosId();
         Store store = storeRepository.findById(posId).orElse(null);
         if(store == null || !store.getStatus().equals(Constants.STATUS_ACTIVE)){
             throw new RequestException(ErrorCode.STORE_ERROR_NOT_FOUND,"store not found");
         }
         ApiMessageDto<ResponseListObjOrders> responseListObjApiMessageDto = new ApiMessageDto<>();
-        Page<Orders> listOrders = ordersRepository.findAll(ordersCriteria.getSpecification(), pageable);
+        List<Orders> listOrders = ordersRepository.findAll(ordersCriteria.getSpecification());
+        List<OrdersDetail> listFirstDetail = ordersDetailRepository.findFirstByListOrders(listOrders);
+        List<OrdersDto> dto = ordersMapper.fromEntityListToOrdersDtoList(listOrders);
+        for (OrdersDto ordersDto : dto){
+            List<OrdersDetail> detailList = new ArrayList<>();
+            for (OrdersDetail detail : listFirstDetail){
+                if(detail.getOrders().getId().equals(ordersDto.getId())){
+                    detailList.add(detail);
+                }
+            }
+            ordersDto.setOrdersDetailDtoList(ordersDetailMapper.fromEntityListToOrdersDetailDtoList(detailList));
+        }
         ResponseListObjOrders responseListObjOrders = new ResponseListObjOrders();
-        responseListObjOrders.setData(ordersMapper.fromEntityListToOrdersDtoList(listOrders.getContent()));
-        responseListObjOrders.setPage(pageable.getPageNumber());
-        responseListObjOrders.setTotalPage(listOrders.getTotalPages());
-        responseListObjOrders.setTotalElements(listOrders.getTotalElements());
-        Double sum = ordersRepository.sumMoney(listOrders.getContent());
+        Double sum = ordersRepository.sumMoney(listOrders);
         responseListObjOrders.setSumMoney(sum);
+        responseListObjOrders.setData(dto);
         responseListObjApiMessageDto.setData(responseListObjOrders);
         responseListObjApiMessageDto.setMessage("Get list success");
         return responseListObjApiMessageDto;
@@ -228,6 +238,7 @@ public class OrdersController extends ABasicController{
             amount += detail.getAmount();
         }
         orders.setAmount(amount);
+        orders.setExpectedReceiveDate(LocalDate.from(new Date().toInstant()).plusDays(7));
         Orders savedOrder = ordersRepository.save(orders);
         /*-----------------------Xử lý orders detail------------------ */
         amountPriceCal(orders,ordersDetailList,savedOrder,promotion);  //Tổng tiền hóa đơn

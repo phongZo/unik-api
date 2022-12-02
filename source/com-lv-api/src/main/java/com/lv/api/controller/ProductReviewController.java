@@ -130,6 +130,8 @@ public class ProductReviewController extends ABasicController{
         if(!detail.getProduct().getId().equals(product.getId())){
             throw new RequestException(ErrorCode.ORDERS_DETAIL_ERROR_BAD_REQUEST, "Product not belongs to detail.");
         }
+        detail.setIsReviewed(true);
+        ordersDetailRepository.save(detail);
     }
 
     private Customer checkCustomer(Long customerId) {

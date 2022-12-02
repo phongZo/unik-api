@@ -27,6 +27,7 @@ public interface OrdersDetailMapper {
     @Mapping(source = "product", target = "productDto")
     @Mapping(source = "price", target = "price")
     @Mapping(source = "amount", target = "amount")
+    @Mapping(source = "isReviewed", target = "isReviewed")
     @BeanMapping(ignoreByDefault = true)
     @Named("adminGetMapping")
     OrdersDetailDto fromEntityToOrdersDetailDto(OrdersDetail ordersDetail);

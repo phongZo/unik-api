@@ -11,4 +11,5 @@ public class OrdersDetailDto extends ABasicAdminDto {
     private Double price;
     private Integer amount;
     private String note;
+    private Boolean isReviewed;
 }

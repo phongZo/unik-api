@@ -93,7 +93,7 @@ public class StoreController extends ABasicController {
         qrJwt.setPosId(store.getId());
         String appendStringRole = Constants.POS_DEVICE_PERMISSION;
         qrJwt.setDeviceId(store.getPosId());
-
+        qrJwt.setPemission(appendStringRole);
         SecurityContext securityContext = SecurityContextHolder.getContext();
         securityContext.setAuthentication(new MyAuthentication(qrJwt));
 

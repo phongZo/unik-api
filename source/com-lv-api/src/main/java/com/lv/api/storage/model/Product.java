@@ -29,7 +29,7 @@ public class Product extends Auditable<String> {
 
     @Column(name = "avg_star")
     private float avgStar = 0f;
-    private Integer totalReview;
+    private Integer totalReview = 0;
 
     @Column(name = "sold_amount")
     private Integer soldAmount = 0;
@@ -47,7 +47,7 @@ public class Product extends Auditable<String> {
     private String image;
 
     @Column(name = "is_sold_out")
-    private Boolean isSoldOut;
+    private Boolean isSoldOut = false;
 
     @Column(name = "kind")
     private Integer kind;
