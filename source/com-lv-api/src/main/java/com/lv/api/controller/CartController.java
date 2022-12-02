@@ -108,7 +108,7 @@ public class CartController extends ABasicController{
             cart.setCustomer(getCurrentCustomer());
             cart = cartRepository.save(cart);
         }
-        LineItem lineItem = lineItemRepository.findByCartIdAndProductId(cart.getId(),product.getId());
+        LineItem lineItem = lineItemRepository.findByCartIdAndVariantId(cart.getId(),variant.getId());
         if(lineItem != null) lineItem.setQuantity(lineItem.getQuantity() + 1);
         else {
             lineItem = new LineItem();

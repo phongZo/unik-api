@@ -70,6 +70,7 @@ public interface ProductMapper {
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id", target = "id")
     @Mapping(source = "name", target = "name")
+    @Mapping(source = "image", target = "image")
     ProductDto fromProductEntityToDtoAutoComplete(Product product);
 
     @Named("fromProductEntityListToDtoListAutoCompleteMapper")

@@ -8,6 +8,6 @@ import javax.sound.sampled.Line;
 import java.util.List;
 
 public interface LineItemRepository extends JpaRepository<LineItem, Long>, JpaSpecificationExecutor<LineItem> {
-    LineItem findByCartIdAndProductId(Long cartId, Long customerId);
+    LineItem findByCartIdAndVariantId(Long cartId, Long productVariantId);
     List<LineItem> findByCartId(Long cartId);
 }
