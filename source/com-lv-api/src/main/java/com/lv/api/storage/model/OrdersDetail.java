@@ -19,8 +19,8 @@ public class OrdersDetail{
     private Boolean isReviewed = false;
 
     @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
+    @JoinColumn(name = "product_variant_id")
+    private ProductVariant productVariant;
     private Double price;
     private Integer amount;
     private String note;

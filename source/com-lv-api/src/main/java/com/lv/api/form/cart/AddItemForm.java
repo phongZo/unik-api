@@ -10,4 +10,8 @@ public class AddItemForm {
     @NotNull(message = "productId can not be null")
     @ApiModelProperty(name = "productId", required = true)
     private Long productId;
+
+    @NotNull(message = "productVariantId can not be null")
+    @ApiModelProperty(name = "productVariantId", required = true)
+    private Long productVariantId;
 }

@@ -9,10 +9,10 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
-        uses = {OrdersMapper.class,ProductMapper.class})
+        uses = {OrdersMapper.class,ProductMapper.class,ProductVariantMapper.class})
 public interface OrdersDetailMapper {
 
-    @Mapping(source = "productId", target = "product.id")
+    @Mapping(source = "variantId", target = "productVariant.id")
     @Mapping(source = "amount", target = "amount")
     @Mapping(source = "note", target = "note")
     @BeanMapping(ignoreByDefault = true)
@@ -24,7 +24,8 @@ public interface OrdersDetailMapper {
 
     @Mapping(source = "id", target = "id")
     @Mapping(source = "orders", target = "ordersDto",qualifiedByName = "ordersAutoCompleteMapping")
-    @Mapping(source = "product", target = "productDto")
+    @Mapping(source = "productVariant", target = "productVariantDto", qualifiedByName = "fromProductVariantEntityToDtoAutoComplete")
+    @Mapping(source = "productVariant.productConfig.product", target = "productDto", qualifiedByName = "clientGetMapping")
     @Mapping(source = "price", target = "price")
     @Mapping(source = "amount", target = "amount")
     @Mapping(source = "isReviewed", target = "isReviewed")
@@ -36,7 +37,8 @@ public interface OrdersDetailMapper {
     List<OrdersDetailDto> fromEntityListToOrdersDetailDtoList(List<OrdersDetail> ordersDetailList);
 
     @Mapping(source = "id", target = "id")
-    @Mapping(source = "product", target = "productDto", qualifiedByName = "fromProductEntityToDtoMapper")
+    @Mapping(source = "productVariant.productConfig.product", target = "productDto", qualifiedByName = "clientGetMapping")
+    @Mapping(source = "productVariant", target = "productVariantDto", qualifiedByName = "fromProductVariantEntityToDtoAutoComplete")
     @Mapping(source = "price", target = "price")
     @Mapping(source = "amount", target = "amount")
     @BeanMapping(ignoreByDefault = true)

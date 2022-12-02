@@ -9,18 +9,15 @@ import com.lv.api.exception.RequestException;
 import com.lv.api.form.cart.AddItemForm;
 import com.lv.api.form.cart.UpdateCartQuantity;
 import com.lv.api.mapper.CartMapper;
+import com.lv.api.mapper.ProductMapper;
 import com.lv.api.storage.model.*;
-import com.lv.api.storage.repository.CartRepository;
-import com.lv.api.storage.repository.CustomerRepository;
-import com.lv.api.storage.repository.LineItemRepository;
-import com.lv.api.storage.repository.ProductRepository;
+import com.lv.api.storage.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.sound.sampled.Line;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -33,10 +30,16 @@ public class CartController extends ABasicController{
     CartRepository cartRepository;
 
     @Autowired
+    ProductVariantRepository variantRepository;
+
+    @Autowired
     LineItemRepository lineItemRepository;
 
     @Autowired
     CustomerRepository customerRepository;
+
+    @Autowired
+    ProductMapper productMapper;
 
     @Autowired
     CartMapper cartMapper;
@@ -64,17 +67,19 @@ public class CartController extends ABasicController{
         if(list != null && !list.isEmpty()){
             Double totalMoney = 0d;
             for (LineItem lineItem : list){
-                Product product = lineItem.getProduct();
+                ProductVariant variant = lineItem.getVariant();
+                Product product = variant.getProductConfig().getProduct();
                 LineItemDto lineItemDto = cartMapper.fromEntityToLineItemDto(lineItem);
+                lineItemDto.setProductDto(productMapper.fromProductEntityToDto(product));
                 dto.getLineItemDtoList().add(lineItemDto);
                 if(product.getIsSaleOff()){
                     float saleOffValue = 0;
                     if(product.getSaleOff() != null){
                         saleOffValue = (float)product.getSaleOff() / 100;
                     }
-                    totalMoney += product.getPrice() * (1 - saleOffValue);
+                    totalMoney += variant.getPrice() * (1 - saleOffValue);
                 }
-                totalMoney += product.getPrice();
+                totalMoney += variant.getPrice();
             }
             dto.setTotalMoney(totalMoney);
         }
@@ -93,6 +98,10 @@ public class CartController extends ABasicController{
         if(product == null || product.getIsSoldOut()|| !product.getStatus().equals(Constants.STATUS_ACTIVE)){
             throw new RequestException(ErrorCode.PRODUCT_NOT_FOUND, "Not found product.");
         }
+        ProductVariant variant = variantRepository.findById(addItemForm.getProductVariantId()).orElse(null);
+        if(variant == null || !variant.getStatus().equals(Constants.STATUS_ACTIVE) || !variant.getProductConfig().getProduct().equals(product)){
+            throw new RequestException(ErrorCode.PRODUCT_VARIANT_NOT_FOUND, "Not found variant.");
+        }
         Cart cart = cartRepository.findByCustomerId(getCurrentCustomer().getId());
         if(cart == null){
             cart = new Cart();
@@ -104,7 +113,7 @@ public class CartController extends ABasicController{
         else {
             lineItem = new LineItem();
             lineItem.setCart(cart);
-            lineItem.setProduct(product);
+            lineItem.setVariant(variant);
             lineItem.setQuantity(1);
         }
         lineItemRepository.save(lineItem);

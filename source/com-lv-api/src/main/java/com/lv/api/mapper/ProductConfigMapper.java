@@ -36,7 +36,7 @@ public interface ProductConfigMapper {
     @Mapping(source = "choiceKind", target = "choiceKind")
     @Mapping(source = "isRequired", target = "isRequired")
     @Mapping(source = "name", target = "name")
-    @Mapping(source = "variants", target = "variants", qualifiedByName = "fromProductVariantEntityToDtoMapper")
+    @Mapping(source = "variants", target = "variants", qualifiedByName = "fromProductVariantEntityListToDtoListMapper")
     ProductConfigDto fromProductConfigEntityToDto(ProductConfig productConfig);
 
     @Named("fromProductConfigEntityListToDtoListMapper")

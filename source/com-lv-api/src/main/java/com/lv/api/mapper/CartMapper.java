@@ -9,7 +9,7 @@ import org.mapstruct.*;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
-        uses = {ProductMapper.class}
+        uses = {ProductVariantMapper.class}
 )
 public interface CartMapper {
 
@@ -22,7 +22,7 @@ public interface CartMapper {
     // --------------------------------------LineItem--------------------------------------
     @Named("fromEntityToLineItemDtoMapper")
     @Mapping(source = "id", target = "id")
-    @Mapping(source = "product", target = "productDto", qualifiedByName = "clientGetMapping")
+    @Mapping(source = "variant", target = "productVariantDto", qualifiedByName = "fromProductVariantEntityToDtoMapper")
     @Mapping(source = "quantity", target = "quantity")
     LineItemDto fromEntityToLineItemDto(LineItem lineItem);
 }

@@ -9,9 +9,9 @@ import javax.validation.constraints.NotNull;
 @Data
 public class CreateOrdersDetailForm {
 
-    @NotNull(message = "productId cannot be null")
+    @NotNull(message = "variantId cannot be null")
     @ApiModelProperty(required = true)
-    private Long productId;
+    private Long variantId;
 
     @AmountOrdersDetail
     @NotNull(message = "amount cannot be null")

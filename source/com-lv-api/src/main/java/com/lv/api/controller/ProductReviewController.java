@@ -127,7 +127,7 @@ public class ProductReviewController extends ABasicController{
         if(detail == null || !detail.getOrders().getCustomer().getAccount().getId().equals(getCurrentUserId())){
             throw new RequestException(ErrorCode.ORDERS_DETAIL_ERROR_NOT_FOUND, "Orders detail not found.");
         }
-        if(!detail.getProduct().getId().equals(product.getId())){
+        if(!detail.getProductVariant().getProductConfig().getProduct().getId().equals(product.getId())){
             throw new RequestException(ErrorCode.ORDERS_DETAIL_ERROR_BAD_REQUEST, "Product not belongs to detail.");
         }
         detail.setIsReviewed(true);

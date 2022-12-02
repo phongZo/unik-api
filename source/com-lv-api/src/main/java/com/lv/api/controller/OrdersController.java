@@ -57,6 +57,9 @@ public class OrdersController extends ABasicController{
     AccountRepository accountRepository;
 
     @Autowired
+    ProductVariantRepository productVariantRepository;
+
+    @Autowired
     CartRepository cartRepository;
 
     @Autowired
@@ -369,7 +372,7 @@ public class OrdersController extends ABasicController{
         if(orders.getState().equals(Constants.ORDERS_STATE_COMPLETED)){
             List<OrdersDetail> ordersDetailList = ordersDetailRepository.findAllByOrdersId(orders.getId());
             for (OrdersDetail ordersDetail : ordersDetailList){
-                Product productCheck = productRepository.findById(ordersDetail.getProduct().getId()).orElse(null);
+                Product productCheck = productRepository.findById(ordersDetail.getProductVariant().getProductConfig().getProduct().getId()).orElse(null);
                 if (productCheck == null){
                     throw new RequestException(ErrorCode.PRODUCT_NOT_FOUND, "product not existed");
                 }
@@ -388,11 +391,15 @@ public class OrdersController extends ABasicController{
         int checkIndex = 0;
         double amountPrice = 0.0;
         for (OrdersDetail ordersDetail : ordersDetailList){
-            Product productCheck = productRepository.findById(ordersDetail.getProduct().getId()).orElse(null);
+            ProductVariant variant = productVariantRepository.findById(ordersDetail.getProductVariant().getId()).orElse(null);
+            if(variant == null){
+                throw new RequestException(ErrorCode.PRODUCT_VARIANT_NOT_FOUND, "product variant not existed");
+            }
+            Product productCheck = productRepository.findById(ordersDetail.getProductVariant().getProductConfig().getProduct().getId()).orElse(null);
             if (productCheck == null){
                 throw new RequestException(ErrorCode.PRODUCT_NOT_FOUND, "product in index "+checkIndex+"is not existed");
             }
-            Double productPrice = productCheck.getPrice();
+            Double productPrice = variant.getPrice();
             if(productCheck.getIsSaleOff()){
                 productPrice = productPrice - (productPrice * productCheck.getSaleOff() / 100);
             }
