@@ -94,7 +94,7 @@ public class ProductController extends ABasicController {
         } else{
             product.getCustomersLiked().add(customer);
         }
-        customerRepository.save(customer);
+        productRepository.save(product);
         apiMessageDto.setMessage("Update favorite success");
         return apiMessageDto;
     }
