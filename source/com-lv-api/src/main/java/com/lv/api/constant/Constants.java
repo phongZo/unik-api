@@ -73,7 +73,7 @@ public class Constants {
     public static final int PRODUCT_KIND_SINGLE = 1;
     public static final int PRODUCT_KIND_GROUP = 2;
 
-    public static final String POS_DEVICE_PERMISSION = "/orders/my-orders,/orders/update-state";
+    public static final String POS_DEVICE_PERMISSION = "/store/update-status,/product/update-sell-status,/orders/my-orders,/orders/update-state";
 
     private Constants(){
         throw new IllegalStateException("Utility class");

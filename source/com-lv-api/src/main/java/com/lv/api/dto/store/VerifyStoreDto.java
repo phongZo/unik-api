@@ -7,4 +7,5 @@ public class VerifyStoreDto {
     private Long id;
     private String token;
     private String name;
+    private Boolean isAcceptOrder;
 }

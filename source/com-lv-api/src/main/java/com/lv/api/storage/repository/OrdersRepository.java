@@ -12,5 +12,8 @@ public interface OrdersRepository extends JpaRepository<Orders, Long>, JpaSpecif
     Orders findOrdersByIdAndCustomerId(Long ordersId, Long customerId);
     @Query("SELECT sum(o.totalMoney) FROM Orders o WHERE o IN :list GROUP BY o.id")
     Double sumMoney(@Param("list") List<Orders> orders);
+
+    @Query("SELECT MAX(o.id) FROM Orders o")
+    Long findMaxId();
 }
 

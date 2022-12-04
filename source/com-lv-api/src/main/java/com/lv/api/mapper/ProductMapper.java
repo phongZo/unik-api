@@ -71,6 +71,7 @@ public interface ProductMapper {
     @Mapping(source = "id", target = "id")
     @Mapping(source = "name", target = "name")
     @Mapping(source = "image", target = "image")
+    @Mapping(source = "isSoldOut", target = "isSoldOut")
     ProductDto fromProductEntityToDtoAutoComplete(Product product);
 
     @Named("fromProductEntityListToDtoListAutoCompleteMapper")

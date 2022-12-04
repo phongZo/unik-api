@@ -12,11 +12,11 @@ import java.util.Date;
 @Table(name = TablePrefix.PREFIX_TABLE + "customer_promotion")
 public class CustomerPromotion extends Auditable<String>{
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "promotion_id", referencedColumnName = "id")
-    @MapsId
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "promotion_id")
     private Promotion promotion;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

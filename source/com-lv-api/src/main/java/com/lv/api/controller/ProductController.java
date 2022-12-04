@@ -10,6 +10,7 @@ import com.lv.api.exception.RequestException;
 import com.lv.api.form.product.CreateProductForm;
 import com.lv.api.form.product.UpdateFavoriteForm;
 import com.lv.api.form.product.UpdateProductForm;
+import com.lv.api.form.product.UpdateSellStatusForm;
 import com.lv.api.mapper.ProductMapper;
 import com.lv.api.service.CommonApiService;
 import com.lv.api.storage.criteria.ProductCriteria;
@@ -95,6 +96,20 @@ public class ProductController extends ABasicController {
         }
         customerRepository.save(customer);
         apiMessageDto.setMessage("Update favorite success");
+        return apiMessageDto;
+    }
+
+    // For store to update sell status
+    @PutMapping(value = "/update-sell-status", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiMessageDto<String> updateSellStatus(@Valid @RequestBody UpdateSellStatusForm updateSellStatusForm, BindingResult bindingResult) {
+        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+        Product product = productRepository.findById(updateSellStatusForm.getProductId()).orElse(null);
+        if(product == null || !product.getStatus().equals(Constants.STATUS_ACTIVE)){
+            throw new RequestException(ErrorCode.PRODUCT_NOT_FOUND, "Not found product.");
+        }
+        product.setIsSoldOut(updateSellStatusForm.getIsSoldOut());
+        productRepository.save(product);
+        apiMessageDto.setMessage("Update status success");
         return apiMessageDto;
     }
 

@@ -114,6 +114,7 @@ public class CustomerController extends ABasicController {
             throw new RequestException(ErrorCode.PROMOTION_ERROR_BAD_REQUEST, "Promotion expiry date not valid.");
         }
         CustomerPromotion customerPromotion = customerPromotionMapper.fromApprovePromotionFormToEntity(approvePromotionForm);
+        customerPromotion.setPromotion(promotion);
         customerPromotionRepository.save(customerPromotion);
         apiMessageDto.setMessage("Approve success");
         return apiMessageDto;

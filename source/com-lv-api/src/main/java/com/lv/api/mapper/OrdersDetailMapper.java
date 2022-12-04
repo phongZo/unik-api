@@ -23,7 +23,6 @@ public interface OrdersDetailMapper {
     List<OrdersDetail> fromCreateOrdersDetailFormListToOrdersDetailList(List<CreateOrdersDetailForm> createOrdersDetailFormList);
 
     @Mapping(source = "id", target = "id")
-    @Mapping(source = "orders", target = "ordersDto",qualifiedByName = "ordersAutoCompleteMapping")
     @Mapping(source = "productVariant", target = "productVariantDto", qualifiedByName = "fromProductVariantEntityToDtoAutoComplete")
     @Mapping(source = "productVariant.productConfig.product", target = "productDto", qualifiedByName = "clientGetMapping")
     @Mapping(source = "price", target = "price")

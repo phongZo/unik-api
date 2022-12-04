@@ -17,6 +17,7 @@ import com.lv.api.storage.repository.*;
 import com.lv.api.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DateUtils;
+import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -216,6 +217,11 @@ public class OrdersController extends ABasicController{
         }
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         Store store = checkStore(createOrdersForm);
+        if(!store.getIsAcceptOrder()){
+            apiMessageDto.setResult(false);
+            apiMessageDto.setMessage("Cửa hàng hiện không hoạt động");
+            return apiMessageDto;
+        }
         CustomerAddress address = checkAddress(createOrdersForm);
         CustomerPromotion promotion = null;
         if(createOrdersForm.getPromotionId() != null){
@@ -448,10 +454,13 @@ public class OrdersController extends ABasicController{
     }
 
     private String generateCode() {
-        String code = StringUtils.generateRandomString(8);
-        code = code.replace("0", "A");
-        code = code.replace("O", "Z");
-        return code;
+        Long maxId = ordersRepository.findMaxId();
+        Long code = 10001L;
+        if(maxId == null || maxId == 0){
+            return code.toString();
+        }
+        code += maxId;
+        return code.toString();
     }
 
     private void checkState(Orders orders) {

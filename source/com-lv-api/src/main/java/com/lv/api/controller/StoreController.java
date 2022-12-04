@@ -10,6 +10,7 @@ import com.lv.api.dto.store.VerifyStoreDto;
 import com.lv.api.exception.RequestException;
 import com.lv.api.form.account.LoginForm;
 import com.lv.api.form.store.CreateStoreForm;
+import com.lv.api.form.store.UpdateStoreStatusForm;
 import com.lv.api.form.store.VerifyDeviceForm;
 import com.lv.api.intercepter.MyAuthentication;
 import com.lv.api.jwt.JWTUtils;
@@ -68,6 +69,18 @@ public class StoreController extends ABasicController {
         return new ApiMessageDto<>(storeMapper.fromStoreEntityToDto(store), "Get store successfully");
     }
 
+    @PutMapping(value = "/update-status", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiMessageDto<String> updateStatus(@Valid @RequestBody UpdateStoreStatusForm updateStoreStatusForm, BindingResult bindingResult) {
+        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+        Store store = storeRepository.findById(getCurrentStoreId()).orElse(null);
+        if (store == null || !Objects.equals(store.getStatus() , Constants.STATUS_ACTIVE)) {
+            throw new RequestException(ErrorCode.STORE_ERROR_NOT_FOUND, "Not found store");
+        }
+        store.setIsAcceptOrder(updateStoreStatusForm.getIsAcceptOrder());
+        apiMessageDto.setMessage("Update store status success");
+        return apiMessageDto;
+    }
+
     @PostMapping(value = "/verify-device", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<VerifyStoreDto> verifyDevice(@Valid @RequestBody VerifyDeviceForm verifyDeviceForm, BindingResult bindingResult) {
         ApiMessageDto<VerifyStoreDto> apiMessageDto = new ApiMessageDto<>();
@@ -79,7 +92,7 @@ public class StoreController extends ABasicController {
         dto.setToken(generateJWT(store));
         dto.setId(store.getId());
         dto.setName(store.getName());
-
+        dto.setIsAcceptOrder(store.getIsAcceptOrder());
         apiMessageDto.setData(dto);
         apiMessageDto.setMessage("Login store success");
         return apiMessageDto;

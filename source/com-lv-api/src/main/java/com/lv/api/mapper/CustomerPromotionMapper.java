@@ -17,7 +17,6 @@ public interface CustomerPromotionMapper {
     @Named("fromApprovePromotionFormToEntity")
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "customerId", target = "customer.id")
-    @Mapping(source = "promotionId", target = "promotion.id")
     @Mapping(source = "expiryDate", target = "expireDate")
     CustomerPromotion fromApprovePromotionFormToEntity(ApprovePromotionForm approvePromotionForm);
 
