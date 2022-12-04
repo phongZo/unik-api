@@ -23,7 +23,7 @@ public class CustomerPromotionCriteria {
             List<Predicate> predicates = new ArrayList<>();
             if (getCustomerId() != null && getInUse() != null && !getInUse()){
                 Join<CustomerPromotion, Customer> joinPromotion = root.join("customer", JoinType.INNER);
-                predicates.add(cb.and(cb.equal(joinPromotion.get("isInUse"), false),cb.equal(joinPromotion.get("id"), getCustomerId())));
+                predicates.add(cb.and(cb.equal(root.get("isInUse"), false),cb.equal(joinPromotion.get("id"), getCustomerId())));
             }
             return cb.and(predicates.toArray(new Predicate[predicates.size()]));
         };
