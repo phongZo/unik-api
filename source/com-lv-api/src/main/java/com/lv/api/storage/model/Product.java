@@ -28,7 +28,7 @@ public class Product extends Auditable<String> {
     private String description;
 
     @Column(name = "avg_star")
-    private float avgStar = 0f;
+    private Integer avgStar = 0;
     private Integer totalReview = 0;
 
     @Column(name = "sold_amount")

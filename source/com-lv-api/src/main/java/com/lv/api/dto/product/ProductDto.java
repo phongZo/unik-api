@@ -49,7 +49,7 @@ public class ProductDto {
     @ApiModelProperty(name = "kind")
     private Integer kind;
 
-    private float avgStar;
+    private Integer avgStar;
 
     private Integer soldAmount;
 
