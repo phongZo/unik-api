@@ -1,7 +1,6 @@
 package com.lv.api.dto.customer;
 
 import com.lv.api.dto.account.AccountAdminDto;
-import com.lv.api.dto.rank.RankDto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,9 +24,6 @@ public class CustomerAdminDto {
 
     @ApiModelProperty("birthday")
     private LocalDate birthday;
-
-    @ApiModelProperty("rank")
-    private RankDto rank;
 
     @ApiModelProperty("note")
     private String note;

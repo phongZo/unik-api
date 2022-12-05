@@ -29,10 +29,6 @@ public class Customer extends Auditable<String> {
     
     private LocalDate birthday;
 
-    @ManyToOne
-    @JoinColumn(name = "rank_id")
-    private Rank rank;
-
     @Column(name = "note", columnDefinition = "varchar(1000)")
     private String note;
 

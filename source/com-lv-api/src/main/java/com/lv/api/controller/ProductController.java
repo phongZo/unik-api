@@ -29,9 +29,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/v1/product")
@@ -66,7 +64,13 @@ public class ProductController extends ABasicController {
 
         Page<Product> productList = productRepository.findAll(productCriteria.getSpecification(), pageable);
         ResponseListObj<ProductDto> responseListObj = new ResponseListObj<>();
-        responseListObj.setData(productMapper.fromEntityListToProductClientDtoList(productList.getContent()));
+        if(productCriteria.getCustomerId() != null){
+            List<Product> modifiableList = new ArrayList<Product>(productList.getContent());
+            Collections.reverse(modifiableList);
+            responseListObj.setData(productMapper.fromEntityListToProductClientDtoList(modifiableList));
+        } else {
+            responseListObj.setData(productMapper.fromEntityListToProductClientDtoList(productList.getContent()));
+        }
         responseListObj.setPage(pageable.getPageNumber());
         responseListObj.setTotalPage(productList.getTotalPages());
         responseListObj.setTotalElements(productList.getTotalElements());

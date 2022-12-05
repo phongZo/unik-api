@@ -209,6 +209,12 @@ public class OrdersController extends ABasicController{
         return customer;
     }
 
+    public LocalDate convertToLocalDateViaInstant(Date dateToConvert) {
+        return dateToConvert.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+    }
+
     @PostMapping(value = "/client-create", produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     public ApiMessageDto<String> clientCreate(@Valid @RequestBody CreateOrdersClientForm createOrdersForm, BindingResult bindingResult) {
@@ -247,7 +253,7 @@ public class OrdersController extends ABasicController{
             amount += detail.getAmount();
         }
         orders.setAmount(amount);
-        orders.setExpectedReceiveDate(LocalDate.from(new Date().toInstant()).plusDays(7));
+        orders.setExpectedReceiveDate(LocalDate.from(convertToLocalDateViaInstant(new Date())).plusDays(7));
         Orders savedOrder = ordersRepository.save(orders);
         /*-----------------------Xử lý orders detail------------------ */
         amountPriceCal(orders,ordersDetailList,savedOrder,promotion);  //Tổng tiền hóa đơn
@@ -401,7 +407,7 @@ public class OrdersController extends ABasicController{
             if(variant == null){
                 throw new RequestException(ErrorCode.PRODUCT_VARIANT_NOT_FOUND, "product variant not existed");
             }
-            Product productCheck = productRepository.findById(ordersDetail.getProductVariant().getProductConfig().getProduct().getId()).orElse(null);
+            Product productCheck = productRepository.findById(variant.getProductConfig().getProduct().getId()).orElse(null);
             if (productCheck == null){
                 throw new RequestException(ErrorCode.PRODUCT_NOT_FOUND, "product in index "+checkIndex+"is not existed");
             }
