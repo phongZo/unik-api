@@ -93,9 +93,15 @@ public class ProductController extends ABasicController {
             throw new RequestException(ErrorCode.PRODUCT_NOT_FOUND, "Not found product.");
         }
         Customer customer = getCurrentCustomer();
-        if(product.getCustomersLiked().contains(customer)){
-            product.getCustomersLiked().remove(customer);
-        } else{
+        boolean isFound = false;
+        for(Customer customerCheck : product.getCustomersLiked()){
+            if(customerCheck.getId().equals(customer.getId())){
+                product.getCustomersLiked().remove(customerCheck);
+                isFound = true;
+                break;
+            }
+        }
+        if(!isFound){
             product.getCustomersLiked().add(customer);
         }
         productRepository.save(product);
