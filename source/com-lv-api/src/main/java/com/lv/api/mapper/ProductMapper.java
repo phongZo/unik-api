@@ -95,16 +95,12 @@ public interface ProductMapper {
 
     @Named("fromProductEntityToAdminDtoMapper")
     @Mapping(source = "id", target = "id")
-    @Mapping(source = "category.id", target = "productCategoryId")
     @Mapping(source = "tags", target = "tags")
-    @Mapping(source = "description", target = "description")
     @Mapping(source = "name", target = "name")
     @Mapping(source = "price", target = "price")
     @Mapping(source = "image", target = "image")
     @Mapping(source = "isSoldOut", target = "isSoldOut")
-    @Mapping(source = "parentProduct.id", target = "parentProductId")
     @Mapping(source = "kind", target = "kind")
-    @Mapping(source = "productConfigs", target = "productConfigs", qualifiedByName = "fromProductConfigEntityListToAdminDtoListMapper")
     ProductAdminDto fromProductEntityToAdminDto(Product product);
 
     @Named("fromProductEntityListToAdminDtoListMapper")

@@ -18,6 +18,8 @@ public class ProductDto {
     private Integer saleOff;   //percent
     private Boolean isSaleOff;
 
+    private Boolean isLike = false;
+
     @ApiModelProperty(name = "productCategoryId")
     private Long productCategoryId;
 

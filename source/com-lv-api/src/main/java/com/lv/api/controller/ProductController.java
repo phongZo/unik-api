@@ -45,6 +45,7 @@ public class ProductController extends ABasicController {
     @Autowired
     CustomerRepository customerRepository;
 
+    // for store
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<ResponseListObj<ProductAdminDto>> list(@Valid ProductCriteria productCriteria, BindingResult bindingResult, Pageable pageable) {
         Page<Product> productPage = productRepository.findAll(productCriteria.getSpecification(), pageable);
@@ -58,6 +59,8 @@ public class ProductController extends ABasicController {
         );
     }
 
+
+    // need to login customer
     @GetMapping(value = "/client-list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<ResponseListObj<ProductDto>> clientList(ProductCriteria productCriteria, Pageable pageable) {
         ApiMessageDto<ResponseListObj<ProductDto>> responseListObjApiMessageDto = new ApiMessageDto<>();
@@ -68,8 +71,21 @@ public class ProductController extends ABasicController {
             List<Product> modifiableList = new ArrayList<Product>(productList.getContent());
             Collections.reverse(modifiableList);
             responseListObj.setData(productMapper.fromEntityListToProductClientDtoList(modifiableList));
-        } else {
-            responseListObj.setData(productMapper.fromEntityListToProductClientDtoList(productList.getContent()));
+        }
+        else if(isCustomer()){
+            List<ProductDto> dto = new ArrayList<>();
+            Long customerId = getCurrentCustomer().getId();
+            for (Product product : productList){
+                ProductDto productDto = productMapper.fromProductEntityToDto(product);
+                for(Customer customer : product.getCustomersLiked()){
+                    if(customer.getId().equals(customerId)){
+                        productDto.setIsLike(true);
+                        break;
+                    }
+                }
+                dto.add(productDto);
+            }
+            responseListObj.setData(dto);
         }
         responseListObj.setPage(pageable.getPageNumber());
         responseListObj.setTotalPage(productList.getTotalPages());
