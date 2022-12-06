@@ -76,7 +76,7 @@ public class ProductController extends ABasicController {
             List<ProductDto> dto = new ArrayList<>();
             Long customerId = getCurrentCustomer().getId();
             for (Product product : productList){
-                ProductDto productDto = productMapper.fromProductEntityToDto(product);
+                ProductDto productDto = productMapper.fromEntityToClientDto(product);
                 for(Customer customer : product.getCustomersLiked()){
                     if(customer.getId().equals(customerId)){
                         productDto.setIsLike(true);
