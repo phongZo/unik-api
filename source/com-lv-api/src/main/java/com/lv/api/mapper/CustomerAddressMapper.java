@@ -18,11 +18,11 @@ import java.util.List;
 )
 public interface CustomerAddressMapper {
     @Mapping(source = "id", target = "id")
-    @Mapping(source = "customer", target = "customerDto", qualifiedByName = "fromCustomerEntityToDtoMapper")
     @Mapping(source = "addressDetails", target = "addressDetails")
     @Mapping(source = "receiverFullName", target = "receiverFullName")
     @Mapping(source = "phone", target = "phone")
     @Mapping(source = "isDefault", target = "isDefault")
+    @Mapping(source = "typeAddress", target = "typeAddress")
     @Mapping(source = "note", target = "note")
     @Mapping(source = "status", target = "status")
     @Mapping(source = "modifiedDate", target = "modifiedDate")
