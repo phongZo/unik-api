@@ -423,13 +423,10 @@ public class OrdersController extends ABasicController{
         Double totalMoney = totalMoneyHaveToPay(amountPrice,orders,promotion);
         totalMoney += Constants.DEFAULT_DELIVERY_FEE;
         orders.setTotalMoney(totalMoney);
-        orders.setVat(Constants.ORDER_VAT);
     }
 
     private Double totalMoneyHaveToPay(Double amountPrice,Orders orders, CustomerPromotion promotion) {
         if(promotion == null){
-            double VAT = (double)Constants.ORDER_VAT / 100;             // Tính VAT (%)
-            amountPrice = amountPrice + amountPrice * VAT ;              // Tiền sau cùng bằng tiền sau khi saleOff cộng với VAT (10% tổng tiền)
             return Math.round(amountPrice * 100.0) / 100.0;
         }
         Integer kind = promotion.getPromotion().getKind();
@@ -442,8 +439,7 @@ public class OrdersController extends ABasicController{
             int percent = Integer.parseInt(promotion.getPromotion().getValue());
             amountAfterSaleOff -= amountAfterSaleOff * ((double)percent / 100);
         }
-        double VAT = (double)Constants.ORDER_VAT / 100;             // Tính VAT (%)
-        amountPrice = amountAfterSaleOff + amountAfterSaleOff * VAT ;              // Tiền sau cùng bằng tiền sau khi saleOff cộng với VAT (10% tổng tiền)
+        amountPrice = amountAfterSaleOff;
         return Math.round(amountPrice * 100.0) / 100.0;          // Làm tròn đến thập phân thứ 2
     }
 

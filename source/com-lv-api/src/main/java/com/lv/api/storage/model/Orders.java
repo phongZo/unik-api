@@ -30,7 +30,6 @@ public class Orders extends Auditable<String>{
 
     private Integer saleOff = 0; // Giảm giá đơn hàng (giảm trước khi tính VAT)
     private Double totalMoney; // Tổng tiền hàng
-    private Integer vat; // VAT
     private Double deliveryFee;
 
     private Integer state; // Trạng thái hiện tại (nhớ tạo constants) 0 created, 1. accepted(da thanh toan), 2 Shipping, 3 done, 4 cancel
