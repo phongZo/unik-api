@@ -125,8 +125,8 @@ public class OrdersController extends ABasicController{
             ordersDto.setOrdersDetailDtoList(ordersDetailMapper.fromEntityListToOrdersDetailDtoList(detailList));
         }
         ResponseListObjOrders responseListObjOrders = new ResponseListObjOrders();
-        Double sum = ordersRepository.sumMoney(listOrders);
-        responseListObjOrders.setSumMoney(sum);
+        //Double sum = ordersRepository.sumMoney(listOrders);
+        //responseListObjOrders.setSumMoney(sum);
         responseListObjOrders.setData(dto);
         responseListObjApiMessageDto.setData(responseListObjOrders);
         responseListObjApiMessageDto.setMessage("Get list success");
