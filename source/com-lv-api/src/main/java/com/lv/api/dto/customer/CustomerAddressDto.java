@@ -16,4 +16,5 @@ public class CustomerAddressDto extends ABasicAdminDto {
     private String phone;
     private Boolean isDefault;
     private String note;
+    private Integer typeAddress;
 }
