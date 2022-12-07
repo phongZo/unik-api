@@ -52,7 +52,7 @@ public interface ProductMapper {
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id", target = "id")
     @Mapping(source = "category.id", target = "productCategoryId")
-    @Mapping(source = "tags", target = "tags")
+    @Mapping(source = "saleOff", target = "saleOff")
     @Mapping(source = "description", target = "description")
     @Mapping(source = "name", target = "name")
     @Mapping(source = "price", target = "price")
