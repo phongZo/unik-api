@@ -45,7 +45,6 @@ public interface CustomerAddressMapper {
     @Named("createCustomerAddress")
     CustomerAddress fromCreateFormToEntity(CreateAddressForm address);
 
-    @Mapping(source = "id", target = "id")
     @Mapping(source = "addressDetails", target = "addressDetails")
     @Mapping(source = "receiverFullName", target = "receiverFullName")
     @Mapping(source = "phone", target = "phone")
