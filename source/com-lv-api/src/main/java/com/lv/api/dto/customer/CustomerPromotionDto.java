@@ -8,6 +8,7 @@ import java.util.Date;
 public class CustomerPromotionDto {
     private Long id;
     private Date expireDate;
+    private Long promotionId;
     private String title;
     private String description;
     private Integer kind;   // 1: money, 2:%

@@ -24,6 +24,7 @@ public interface CustomerPromotionMapper {
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id", target = "id")
     @Mapping(source = "expireDate", target = "expireDate")
+    @Mapping(source = "promotion.id", target = "promotionId")
     @Mapping(source = "promotion.title", target = "title")
     @Mapping(source = "promotion.description", target = "description")
     @Mapping(source = "promotion.kind", target = "kind")

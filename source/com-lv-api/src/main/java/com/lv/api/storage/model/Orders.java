@@ -27,6 +27,7 @@ public class Orders extends Auditable<String>{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
     private Customer customer;
+    private Double saleOffMoney = 0d;
 
     private Integer saleOff = 0; // Giảm giá đơn hàng (giảm trước khi tính VAT)
     private Double totalMoney; // Tổng tiền hàng

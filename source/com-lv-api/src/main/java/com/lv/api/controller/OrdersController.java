@@ -420,8 +420,9 @@ public class OrdersController extends ABasicController{
             ordersDetail.setOrders(savedOrder);
             checkIndex++;
         }
+        amountPrice += Constants.DEFAULT_DELIVERY_FEE;
         Double totalMoney = totalMoneyHaveToPay(amountPrice,orders,promotion);
-        totalMoney += Constants.DEFAULT_DELIVERY_FEE;
+        orders.setSaleOffMoney(amountPrice - totalMoney);
         orders.setTotalMoney(totalMoney);
     }
 
@@ -430,16 +431,20 @@ public class OrdersController extends ABasicController{
             return Math.round(amountPrice * 100.0) / 100.0;
         }
         Integer kind = promotion.getPromotion().getKind();
-        double saleOff = 0d;
-        double amountAfterSaleOff = 0d;
         if(kind.equals(Constants.PROMOTION_KIND_MONEY)){
-            saleOff = Double.parseDouble(promotion.getPromotion().getValue());
-            amountAfterSaleOff -= saleOff;
+            double saleOff = Double.parseDouble(promotion.getPromotion().getValue());
+            amountPrice -= saleOff;
         } else if (kind.equals(Constants.PROMOTION_KIND_PERCENT)){
             int percent = Integer.parseInt(promotion.getPromotion().getValue());
-            amountAfterSaleOff -= amountAfterSaleOff * ((double)percent / 100);
+            double valueAfterSale = amountPrice * ((double)percent / 100);
+            if(promotion.getPromotion().getMaxValueForPercent() != null){
+                if(valueAfterSale > promotion.getPromotion().getMaxValueForPercent()){
+                    amountPrice -= promotion.getPromotion().getMaxValueForPercent();
+                    return Math.round(amountPrice * 100.0) / 100.0;
+                }
+            }
+            amountPrice -= amountPrice - amountPrice * ((double)percent / 100);
         }
-        amountPrice = amountAfterSaleOff;
         return Math.round(amountPrice * 100.0) / 100.0;          // Làm tròn đến thập phân thứ 2
     }
 
