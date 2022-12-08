@@ -82,6 +82,14 @@ public class AddressController extends ABasicController{
             throw new RequestException(ErrorCode.CUSTOMER_ADDRESS_ERROR_UNAUTHORIZED, "Not allowed to create.");
         }
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+        // only 1 default address
+        if(createAddressForm.getIsDefault()){
+            CustomerAddress defaultAddress = addressRepository.findCustomerAddressByCustomerIdAndIsDefault(getCurrentCustomer().getId(),true);
+            if(defaultAddress != null){
+                defaultAddress.setIsDefault(false);
+                addressRepository.save(defaultAddress);
+            }
+        }
         CustomerAddress address = addressMapper.fromCreateFormToEntity(createAddressForm);
         address.setCustomer(getCurrentCustomer());
         addressRepository.save(address);

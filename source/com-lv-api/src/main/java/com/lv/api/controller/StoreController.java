@@ -77,6 +77,7 @@ public class StoreController extends ABasicController {
             throw new RequestException(ErrorCode.STORE_ERROR_NOT_FOUND, "Not found store");
         }
         store.setIsAcceptOrder(updateStoreStatusForm.getIsAcceptOrder());
+        storeRepository.save(store);
         apiMessageDto.setMessage("Update store status success");
         return apiMessageDto;
     }
