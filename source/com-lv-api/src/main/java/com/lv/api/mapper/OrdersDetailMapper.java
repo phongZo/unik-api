@@ -40,7 +40,6 @@ public interface OrdersDetailMapper {
     @Mapping(source = "productVariant", target = "productVariantDto", qualifiedByName = "fromProductVariantEntityToDtoAutoComplete")
     @Mapping(source = "price", target = "price")
     @Mapping(source = "amount", target = "amount")
-    @Mapping(source = "saleOffMoney", target = "saleOffMoney")
     @BeanMapping(ignoreByDefault = true)
     @Named("clientGetMapping")
     OrdersDetailDto fromEntityToOrdersDetailClientDto(OrdersDetail ordersDetail);

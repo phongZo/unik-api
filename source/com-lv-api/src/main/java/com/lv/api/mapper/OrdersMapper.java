@@ -25,6 +25,7 @@ public interface OrdersMapper {
     @Mapping(source = "prevState", target = "prevState")
     @Mapping(source = "createdDate", target = "createdDate")
     @Mapping(source = "code", target = "code")
+    @Mapping(source = "saleOffMoney", target = "saleOffMoney")
     @Mapping(source = "store.id", target = "storeId")
     @Mapping(source = "paymentMethod", target = "paymentMethod")
     @Mapping(source = "deliveryFee", target = "deliveryFee")
