@@ -36,6 +36,9 @@ public class ProductAdminDto extends ABasicAdminDto {
     @ApiModelProperty(name = "parentProductId")
     private Long parentProductId;
 
+    private Boolean isSaleOff = false;
+    private Integer saleOff;
+
     @ApiModelProperty(name = "kind")
     private Integer kind;
 

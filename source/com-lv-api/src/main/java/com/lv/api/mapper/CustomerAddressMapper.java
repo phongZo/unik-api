@@ -52,5 +52,5 @@ public interface CustomerAddressMapper {
     @Mapping(source = "typeAddress", target = "typeAddress")
     @BeanMapping(ignoreByDefault = true)
     @Named("updateCustomerAddress")
-    CustomerAddress fromUpdateFormToEntity(UpdateAddressForm address);
+    void fromUpdateFormToEntity(UpdateAddressForm address, @MappingTarget CustomerAddress customerAddress);
 }

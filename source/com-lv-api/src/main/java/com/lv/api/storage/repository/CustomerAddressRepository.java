@@ -10,5 +10,5 @@ import java.util.List;
 
 public interface CustomerAddressRepository extends JpaRepository<CustomerAddress, Long>, JpaSpecificationExecutor<CustomerAddress> {
     Page<CustomerAddress> findCustomerAddressByCustomerId(Long customerId, Pageable pageable);
-    List<CustomerAddress> findCustomerAddressByCustomerIdAndIsDefault(Long customerId, Boolean isDefault);
+    CustomerAddress findCustomerAddressByCustomerIdAndIsDefault(Long customerId, Boolean isDefault);
 }

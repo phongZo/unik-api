@@ -109,7 +109,16 @@ public class AddressController extends ABasicController{
         if(address == null){
             throw new RequestException(ErrorCode.CUSTOMER_ADDRESS_ERROR_NOT_FOUND, "Not found address.");
         }
-        address = addressMapper.fromUpdateFormToEntity(updateAddressForm);
+
+        // only 1 default address
+        if(updateAddressForm.getIsDefault()){
+            CustomerAddress defaultAddress = addressRepository.findCustomerAddressByCustomerIdAndIsDefault(getCurrentCustomer().getId(),true);
+            if(defaultAddress != null){
+                defaultAddress.setIsDefault(false);
+                addressRepository.save(defaultAddress);
+            }
+        }
+        addressMapper.fromUpdateFormToEntity(updateAddressForm, address);
         addressRepository.save(address);
         apiMessageDto.setMessage("Update address success");
         return apiMessageDto;

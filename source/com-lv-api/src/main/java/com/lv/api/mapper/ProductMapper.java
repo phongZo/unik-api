@@ -98,6 +98,8 @@ public interface ProductMapper {
     @Mapping(source = "tags", target = "tags")
     @Mapping(source = "name", target = "name")
     @Mapping(source = "price", target = "price")
+    @Mapping(source = "isSaleOff", target = "isSaleOff")
+    @Mapping(source = "saleOff", target = "saleOff")
     @Mapping(source = "image", target = "image")
     @Mapping(source = "isSoldOut", target = "isSoldOut")
     @Mapping(source = "kind", target = "kind")
