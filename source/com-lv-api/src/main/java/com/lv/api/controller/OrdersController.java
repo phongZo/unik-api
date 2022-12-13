@@ -415,8 +415,8 @@ public class OrdersController extends ABasicController{
             if(productCheck.getIsSaleOff()){
                 productPrice = productPrice - (productPrice * productCheck.getSaleOff() / 100);
             }
-            ordersDetail.setPrice(productPrice);
             amountPrice = amountPrice + productPrice * (ordersDetail.getAmount()); // Tổng tiền 1 sp
+            ordersDetail.setPrice(productPrice * ordersDetail.getAmount());
             ordersDetail.setOrders(savedOrder);
             checkIndex++;
         }
