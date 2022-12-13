@@ -16,7 +16,7 @@ public class Promotion extends Auditable<String>{
 
     private String title;
 
-    @Column(columnDefinition = "LONGTEXT")
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     private Integer kind;   // 1: money, 2:%

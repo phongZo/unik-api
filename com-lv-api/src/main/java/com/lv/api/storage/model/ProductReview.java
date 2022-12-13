@@ -24,6 +24,6 @@ public class ProductReview extends Auditable<String>{
 
     private Integer star;
 
-    @Column(columnDefinition = "LONGTEXT")
+    @Column(columnDefinition = "TEXT")
     private String content;
 }
