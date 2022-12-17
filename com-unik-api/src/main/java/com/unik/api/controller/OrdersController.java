@@ -352,6 +352,11 @@ public class OrdersController extends ABasicController{
                 customerPromotionRepository.save(customerPromotion);
             }
         }
+        if(orders.getPaymentMethod().equals(Constants.PAYMENT_METHOD_ONLINE)){
+            Customer customer = customerRepository.findById(getCurrentCustomer().getId()).orElse(null);
+            customer.setWalletMoney(customer.getWalletMoney() + orders.getTotalMoney());
+            customerRepository.save(customer);
+        }
         ordersRepository.save(orders);
         apiMessageDto.setMessage("Cancel order success");
         return apiMessageDto;
