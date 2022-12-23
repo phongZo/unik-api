@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -191,7 +192,22 @@ public class CustomerController extends ABasicController {
         customer.getAccount().setGroup(groupCustomer);
         customer.getAccount().setKind(Constants.USER_KIND_CUSTOMER);
         //rank?
-        customerRepository.save(customer);
+        Customer savedCustomer = customerRepository.save(customer);
+        Promotion promotion = promotionRepository.findFirstByTitle("Ưu đãi hội viên mới");
+        if(promotion != null){
+            CustomerPromotion customerPromotion = new CustomerPromotion();
+            customerPromotion.setCustomer(savedCustomer);
+            customerPromotion.setPromotion(promotion);
+            customerPromotion.setIsInUse(false);
+
+            Date dt = new Date();
+            Calendar c = Calendar.getInstance();
+            c.setTime(dt);
+            c.add(Calendar.DATE, 7);
+            dt = c.getTime();
+            customerPromotion.setExpireDate(dt);
+            customerPromotionRepository.save(customerPromotion);
+        }
         return new ApiMessageDto<>("Create customer successfully");
     }
 
